@@ -36,6 +36,8 @@ cell.imageView.image = nil;
                           	UITableViewCell *tmpCell = [tableView cellForRowAtIndexPath:indexPath];
                             tmpCell.imageView.image = [UIImage imageWithData:imgData];
                             [tmpCell setNeedsLayout];
+                        } else {
+                      		// if we got error when load image
                         }
                     }];
 </pre>
