@@ -33,9 +33,7 @@ cell.imageView.image = nil;
 [DLImageLoader loadImageFromURL:@"image_url_here"
                       completed:^(NSError *error, NSData *imgData) {
                         if (error == nil) {
-                          	UITableViewCell *tmpCell = [tableView cellForRowAtIndexPath:indexPath];
-                            tmpCell.imageView.image = [UIImage imageWithData:imgData];
-                            [tmpCell setNeedsLayout];
+                            cell.imageView.image = [UIImage imageWithData:imgData];
                         } else {
                       		// if we got error when load image
                         }
