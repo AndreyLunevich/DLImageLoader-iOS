@@ -29,7 +29,7 @@
  */
 - (void)deleteImageFromCache:(NSString *)url;
 
-/** Image from cache
+/** Get image from cache
  @param url The key of the image
  @return image from cache
  */

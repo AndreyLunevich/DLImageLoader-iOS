@@ -9,7 +9,7 @@
 
 @interface DLILCache : NSObject <NSCoding>
 
-/* Array of all objects in the scheme */
+/* Array of all images in the cache */
 @property (nonatomic, strong) NSMutableDictionary *images;
 
 @end

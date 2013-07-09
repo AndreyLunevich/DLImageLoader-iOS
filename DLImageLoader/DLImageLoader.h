@@ -9,6 +9,9 @@
 
 @interface DLImageLoader : NSObject
 
+/** Load image from url
+ @param urlString The url of image
+ */
 + (void)loadImageFromURL:(NSString *)urlString
                completed:(void(^)(NSError *error, NSData *imgData))completed;
 
