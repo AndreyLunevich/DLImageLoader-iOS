@@ -1,7 +1,7 @@
 DLImageLoader-iOS
 =================
 
-Image Loader for ios
+Image Loader for ios (downloading and caching images).
 
 // ===  Sample of using DLImageLoader  === //
 
