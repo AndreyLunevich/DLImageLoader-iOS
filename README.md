@@ -11,6 +11,7 @@ Image Loader for ios
 
 >After that, call image loading:
 
+<pre>
 [DLImageLoader loadImageFromURL:@"image_url_here"
                       completed:^(NSError *error, NSData *imgData) {
                       	if (error == nil) {
@@ -19,3 +20,4 @@ Image Loader for ios
                       		// if we got error when load image
                         }
                     }];
+</pre>
