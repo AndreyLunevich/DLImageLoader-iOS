@@ -7,7 +7,9 @@ Image Loader for ios
 
 >Connect DLImageLoader in your .m file:
 
+<pre>
 #import "DLImageLoader.h"
+</pre>
 
 >After that, call image loading:
 
