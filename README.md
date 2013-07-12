@@ -23,3 +23,5 @@ Image Loader for ios (downloading and caching images).
                         }
                     }];
 </pre>
+
+// === Sample is in DLImageLoader Demo == //
