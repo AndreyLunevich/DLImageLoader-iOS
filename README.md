@@ -5,7 +5,10 @@ Image Loader for ios (downloading and caching images).
 
 ## Setup
 
->Connect DLImageLoader in your .m file:
+>Connect DLImageLoader in file e.g.: <br/>
+SomeViewController.m <br/>
+or <br/>
+AppName-Prefix.pch <br/>
 
 <pre>
 #import "DLImageLoader.h"
