@@ -28,7 +28,7 @@ Image Loader for ios (downloading and caching images).
 [[DLImageLoader sharedInstance] loadImageFromUrl:@"image_url_here"
                                        completed:^(NSError *error, UIImage *image) {
                                             if (error == nil) {
-                                                // if we have no an errors
+                                                // if we have no any errors
                                             } else {
                                                 // if we got an error when load an image
                                             }
