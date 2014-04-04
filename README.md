@@ -1,7 +1,8 @@
 DLImageLoader-iOS
 =================
 
-Image Loader for ios (downloading and caching images).
+Image Loader for iOS. <br/>
+This project aims to provide a reusable instrument for asynchronous image loading, caching and displaying.
 
 ## Setup
 
