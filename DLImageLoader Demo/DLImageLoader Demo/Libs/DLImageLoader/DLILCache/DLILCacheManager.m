@@ -1,9 +1,20 @@
 //
 //  DLILCacheManager.m
 //
-//  Created by Andrey Lunevich on 7/9/13.
-//  Copyright (c) 2013 Andrey Lunevich. All rights reserved.
-//
+//  Created by Andrey Lunevich
+//  Copyright 2013-2014 Andrey Lunevich. All rights reserved.
+
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+
+//  http://www.apache.org/licenses/LICENSE-2.0
+
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
 
 #import "DLILCacheManager.h"
 #import "DLILCache.h"
@@ -21,15 +32,6 @@ NSString * const CACHE_FILE = @"cache.txt";
 @implementation DLILCacheManager
 
 static DLILCacheManager *_sharedInstance = nil;
-
-+ (DLILCacheManager *)sharedInstance {
-    @synchronized(self) {
-        if (!_sharedInstance) {
-            _sharedInstance = [[DLILCacheManager alloc] init];
-        }
-    }
-    return _sharedInstance;
-}
 
 - (id)init {
     self = [super init];
@@ -54,8 +56,9 @@ static DLILCacheManager *_sharedInstance = nil;
                     atomically:YES];
 }
 
-/** Loads cache
- @return Saved cache
+/** 
+    Loads cache
+    @return Saved cache
  */
 - (DLILCache *)loadCache {
     NSData * objectsLoaded = [NSData dataWithContentsOfFile:[Documents stringByAppendingPathComponent:CACHE_FILE]];

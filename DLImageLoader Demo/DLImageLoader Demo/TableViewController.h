@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  TableViewController.h
 //  DLImageLoader Demo
 //
 //  Created by Andrey Lunevich on 7/12/13.
@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UITableViewController
+@interface TableViewController : UITableViewController
 
 @end

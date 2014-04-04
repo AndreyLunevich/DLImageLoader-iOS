@@ -1,18 +1,57 @@
 //
 //  DLImageLoader.h
 //
-//  Created by Andrey Lunevich on 7/9/13.
-//  Copyright (c) 2013 Andrey Lunevich. All rights reserved.
-//
+//  Created by Andrey Lunevich
+//  Copyright 2013-2014 Andrey Lunevich. All rights reserved.
+
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+
+//  http://www.apache.org/licenses/LICENSE-2.0
+
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
 
 #import <Foundation/Foundation.h>
 
-@interface DLImageLoader : NSObject
+@interface DLImageLoader : NSObject <NSURLConnectionDataDelegate>
 
-/** Load image from url
+@property (nonatomic) int operationsLimit;
+@property (nonatomic) BOOL dlilLogEnable;
+
+/**
+ Returns shared instance
+ */
++ (DLImageLoader *)sharedInstance;
+
+/**
+ Load data from url
  @param urlString The url of image
  */
-+ (void)loadImageFromURL:(NSString *)urlString
-               completed:(void(^)(NSError *error, NSData *imgData))completed;
+- (void)loadDataFromUrl:(NSString *)urlString
+              completed:(void(^)(NSError *error, NSData *data))completed;
+
+/**
+ Load image from url
+ @param urlString The url of image
+ */
+- (void)loadImageFromUrl:(NSString *)urlString
+               completed:(void(^)(NSError *error, UIImage *image))completed;
+
+/**
+ Load image from url
+ @param urlString The url of image
+ */
+- (void)displayImageFromUrl:(NSString *)urlString
+                  imageView:(UIImageView *)imageView;
+
+/**
+ Stop all active operations
+ */
+- (void)stopDataLoading;
 
 @end
