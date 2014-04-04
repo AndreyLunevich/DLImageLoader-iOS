@@ -3,7 +3,7 @@ DLImageLoader-iOS
 
 Image Loader for ios (downloading and caching images).
 
-// ===  Sample of using DLImageLoader  === //
+## Setup
 
 >Connect DLImageLoader in your .m file:
 
@@ -11,20 +11,35 @@ Image Loader for ios (downloading and caching images).
 #import "DLImageLoader.h"
 </pre>
 
->After that, call image loading:
+## Usage
+
+### Simple
 
 <pre>
-[DLImageLoader loadImageFromURL:@"image_url_here"
-                      completed:^(NSError *error, NSData *imgData) {
-                      	if (error == nil) {
-                      		// if we have no errors
-                      	} else {
-                      		// if we got error when load image
-                        }
-                    }];
+[[DLImageLoader sharedInstance] displayImageFromUrl:@"image_url_here"
+                                          imageView:@"UIImageView here"];
 </pre>
 
-// === Sample is in DLImageLoader Demo == //
+### Complete
+
+// === Two possible variants === //
+
+<pre>
+[[DLImageLoader sharedInstance] loadImageFromUrl:@"image_url_here"
+                                       completed:^(NSError *error, UIImage *image) {
+                                            if (error == nil) {
+                                                // if we have no an errors
+                                            } else {
+                                                // if we got an error when load an image
+                                            }
+                                       }];
+</pre>
+<pre>
+[[DLImageLoader sharedInstance] loadDataFromUrl:@"file_url_here"
+                                      completed:^(NSError *error, NSData *data) {
+                                            // do anything you want
+                                      }];
+</pre>
 
 ## License
 
