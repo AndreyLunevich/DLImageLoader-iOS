@@ -4,6 +4,8 @@ DLImageLoader-iOS
 Image Loader for iOS. <br/>
 This project aims to provide a reusable instrument for asynchronous image loading, caching and displaying.
 
+![Screenshot](https://raw.githubusercontent.com/AndreyLunevich/DLImageLoader-iOS/master/dlil.png)
+
 ## Setup
 
 >Connect DLImageLoader in file e.g.: <br/>
