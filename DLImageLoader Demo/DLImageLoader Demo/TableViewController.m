@@ -62,6 +62,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *identifier = @"TableViewCell";
     TableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    [cell.title setText:[NSString stringWithFormat:@"Item = %d", indexPath.row]];
     [[DLImageLoader sharedInstance] displayImageFromUrl:[self.urls objectAtIndex:indexPath.row]
                                               imageView:cell.thumbnailView];
     return cell;
