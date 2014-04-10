@@ -47,6 +47,11 @@ AppName-Prefix.pch <br/>
                                       }];
 </pre>
 
+
+## Applications using DLImageLoader
+
+[Naomuseum](https://itunes.apple.com/ru/app/naomuseum/id847290457?mt=8)
+
 ## License
 
 If you use DLImageLoader code in your application you should inform the author about it ( email: andrey.lunevich[at]gmail[dot]com ) like this:
