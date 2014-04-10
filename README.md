@@ -6,16 +6,23 @@ This project aims to provide a reusable instrument for asynchronous image loadin
 
 ![Screenshot](https://raw.githubusercontent.com/AndreyLunevich/DLImageLoader-iOS/master/dlil.png)
 
-## Setup
+## Installation
 
->Connect DLImageLoader in file e.g.: <br/>
-SomeViewController.m <br/>
-or <br/>
-AppName-Prefix.pch <br/>
+### Cocoapods
 
-<pre>
-#import "DLImageLoader.h"
-</pre>
+[CocoaPods](http://cocoapods.org) is the recommended way to add DLImageLoader to your project.
+
+1. Add a pod entry for DLImageLoader to your Podfile `pod 'DLImageLoader', '~> 1.0.0'`
+2. Install the pod(s) by running `pod install`.
+3. Include DLImageLoader wherever you need it with `#import "DLImageLoader.h"`.
+
+### Source files
+
+Alternatively you can directly add the `DLImageLoader` folder to your project.
+
+1. Download the latest code version or add the repository as a git submodule to your git-tracked project. 
+2. Open your project in Xcode, then drag and drop `DLImageLoader` folder onto your project (use the "Product Navigator view"). Make sure to select Copy items when asked if you extracted the code archive outside of your project. 
+3. Include DLImageLoader wherever you need it with <pre>#import "DLImageLoader.h"</pre> (e.g. SomeViewController.m or AppName-Prefix.pch).
 
 ## Usage
 
