@@ -18,29 +18,28 @@
 
 #import <Foundation/Foundation.h>
 
-@class DLILCache;
-
 @interface DLILCacheManager : NSObject
 
-/** Saves cache to file
- */
-- (void)saveCache;
+/**
+ memory cache
+ @param memoryCacheEnabled by default is YES
+ **/
+@property (nonatomic, readonly, getter = isMemoryCacheEnabled) BOOL memoryCacheEnabled;
 
-/** Add new image to cache
- @param image The image to cache
- @param url The key of the image
- */
-- (void)addNewImageToCache:(NSData *)image url:(NSString *)url;
+/**
+ disk cache
+ @param diskCacheEnabled by default is YES
+ **/
+@property (nonatomic, readonly, getter = isDiskCacheEnabled) BOOL diskCacheEnabled;
 
-/** Delete image from cache
- @param url The key of the image
- */
-- (void)deleteImageFromCache:(NSString *)url;
++ (instancetype)sharedInstance;
 
-/** Get image from cache
- @param url The key of the image
- @return image from cache
- */
-- (NSData *)imageFromCache:(NSString *)url;
+- (void)setCacheInMemory:(BOOL)enabled;
+
+- (void)setCacheInDisk:(BOOL)enabled;
+
+- (UIImage *)imageByKey:(NSString *)key;
+
+- (void)performWithImage:(UIImage *)image andKey:(NSString *)key;
 
 @end

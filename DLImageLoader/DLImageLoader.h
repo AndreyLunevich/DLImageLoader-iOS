@@ -18,33 +18,42 @@
 
 #import <Foundation/Foundation.h>
 
-@interface DLImageLoader : NSObject <NSURLConnectionDataDelegate>
-
-@property (nonatomic) int operationsLimit;
-@property (nonatomic) BOOL dlilLogEnable;
+@interface DLImageLoader : NSObject
 
 /**
- Returns shared instance
+ DLImageLoader logger
+ Default value YES
+ **/
+@property (nonatomic) BOOL isDLILLogEnabled;
+
+/**
+ Instance method
+ @return shared instance.
  */
 + (DLImageLoader *)sharedInstance;
 
 /**
- Load data from url
- @param urlString The url of image
- */
-- (void)loadDataFromUrl:(NSString *)urlString
-              completed:(void(^)(NSError *error, NSData *data))completed;
-
-/**
  Load image from url
- @param urlString The url of image
+ @param urlString The url of image.
+ @param completed Completed is a completion block that will call after image loading.
  */
 - (void)loadImageFromUrl:(NSString *)urlString
                completed:(void(^)(NSError *error, UIImage *image))completed;
 
 /**
  Load image from url
- @param urlString The url of image
+ @param urlString The url of image.
+ @param completed Completed is a completion block that will call after image loading.
+ @param canceled Canceled is a block that will if loading opedation was calceled.
+ */
+- (void)loadImageFromUrl:(NSString *)urlString
+               completed:(void(^)(NSError *error, UIImage *image))completed
+                canceled:(void(^)())canceled;
+
+/**
+ Load image from url
+ @param urlString The url of image.
+ @param imageView UIImageView in which will display image.
  */
 - (void)displayImageFromUrl:(NSString *)urlString
                   imageView:(UIImageView *)imageView;

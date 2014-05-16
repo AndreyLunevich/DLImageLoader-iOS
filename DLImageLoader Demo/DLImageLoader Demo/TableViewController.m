@@ -30,6 +30,7 @@
     [super viewDidLoad];
     self.urls = @[
                   @"http://pavellunevich.com/Folders/Illustrations/2127681691.png",
+                  @"http://imgs.mi9.com/uploads/female-celebrities/4700/lisha-cuthbert-sexy-girl-wallpaper_2816x2112_84356.jpg",
                   @"http://pavellunevich.com/Folders/Illustrations/757637590.png",
                   @"http://pavellunevich.com/Folders/Illustrations/1429149926.png",
                   @"http://pavellunevich.com/Folders/Illustrations/1321129696.png",
@@ -60,11 +61,8 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *identifier = @"TableViewCell";
-    TableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-    [cell.title setText:[NSString stringWithFormat:@"Item = %d", indexPath.row]];
-    [[DLImageLoader sharedInstance] displayImageFromUrl:[self.urls objectAtIndex:indexPath.row]
-                                              imageView:cell.thumbnailView];
+    TableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TableViewCell"];
+    [cell fillWithUrl:[self.urls objectAtIndex:indexPath.row] index:indexPath.row];
     return cell;
 }
 

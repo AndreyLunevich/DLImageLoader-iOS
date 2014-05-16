@@ -33,23 +33,30 @@
     // Do any additional setup after loading the view.
     self.urls = @[
                   @"http://pavellunevich.com/Folders/Illustrations/2127681691.png",
+                  @"http://imgs.mi9.com/uploads/female-celebrities/4848/keira-knightley-sexy-wallpaper_1280x1024_89408.jpg",
                   @"http://pavellunevich.com/Folders/Illustrations/757637590.png",
+                  @"http://wallzbucket.com/data/media/100/Sexy_Girl9005.jpg",
                   @"http://pavellunevich.com/Folders/Illustrations/1429149926.png",
+                  @"http://www.river-design.com/blog/wp-content/uploads/2008/08/img_3590.jpg",
                   @"http://pavellunevich.com/Folders/Illustrations/1321129696.png",
                   @"http://pavellunevich.com/Folders/Graphics/1984135185.png",
+                  @"http://www.esprent.com/wp-content/uploads/2014/05/casa_mila_gaudi_7.jpg",
                   @"http://pavellunevich.com/Folders/Paintings/1366779420.png",
+                  @"http://www.brynosaurus.com/album/2003/0527-Barcelona/gaudi-lg.jpg",
                   @"http://pavellunevich.com/Folders/Paintings/1383399540.png",
+                  @"http://kejohnstone.files.wordpress.com/2011/03/img_0805.jpg",
                   @"http://pavellunevich.com/Folders/Paintings/1888084308.png",
+                  @"http://yourdailyexperience.com/wp-content/uploads/2014/04/Famous-Gaudi-buildings-in-Barcelona.jpg",
                   @"http://pavellunevich.com/Folders/Paintings/58600467.png",
+                  @"http://www.ourjournal.ca/Insignia/antoni_gaudi_casa_batllo_balconies.jpg",
                   @"http://pavellunevich.com/Folders/Paintings/1287185856.png",
+                  @"http://www.carlaz.com/holiday/barcelona2001/images/barca_gaudi_front.jpg",
                   @"http://pavellunevich.com/Folders/Paintings/1428255199.png",
                   @"http://pavellunevich.com/Folders/Paintings/2125733428.png",
                   @"http://pavellunevich.com/Folders/Paintings/1209572488.png",
                   @"http://pavellunevich.com/Folders/Paintings/881602041.png",
                   @"http://pavellunevich.com/Folders/Paintings/1968578639.png",
-                  @"http://upload.wikimedia.org/wikipedia/commons/c/c3/Shenandoah_deer_20050521_191017_1.3008x2000.jpg",
-                  @"http://upload.wikimedia.org/wikipedia/commons/1/19/Thunderstorm_in_sydney_2000x1500.png",
-                  @"http://fc03.deviantart.net/fs71/i/2011/312/7/b/background_14_2000_x_2000_by_frostbo-d45lw2z.png",
+                  @"http://www.customity.com/storage/public/imagecache/1920x1200/image/wallpaper/201007/1367-carmen-electra-sexy-bikini-wallpaper-1024x768-customity.jpg",
                   ];
 }
 
@@ -66,11 +73,9 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *identifier = @"CollectionViewCell";
-    CollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier
+    CollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CollectionViewCell"
                                                                          forIndexPath:indexPath];
-    [[DLImageLoader sharedInstance] displayImageFromUrl:[self.urls objectAtIndex:indexPath.row]
-                                              imageView:cell.thumbnailView];
+    [cell fillWithUrl:[self.urls objectAtIndex:indexPath.row]];
     return cell;
 }
 

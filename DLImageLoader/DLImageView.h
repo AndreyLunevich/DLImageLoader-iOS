@@ -1,5 +1,5 @@
 //
-//  DLILCache.h
+//  DLImageView.h
 //
 //  Created by Andrey Lunevich
 //  Copyright 2013-2014 Andrey Lunevich. All rights reserved.
@@ -16,11 +16,18 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
-@interface DLILCache : NSObject <NSCoding>
+@interface DLImageView : UIImageView
 
-/* Array of all images in the cache */
-@property (nonatomic, strong) NSMutableDictionary *images;
+/**
+ Load image from url
+ @param urlString The url of image.
+ @param completed Completed is a completion block that will call after image loading.
+ */
+- (void)loadImageFromUrl:(NSString *)urlString
+               completed:(void(^)(NSError *error, UIImage *image))completed;
+
+- (void)cancelLoading;
 
 @end

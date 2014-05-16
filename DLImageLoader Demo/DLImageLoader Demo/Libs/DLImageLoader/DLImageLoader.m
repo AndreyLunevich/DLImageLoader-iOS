@@ -18,7 +18,7 @@
 
 #import "DLImageLoader.h"
 #import "DLILCacheManager.h"
-#import "DLILCache.h"
+#import "DLILOperation.h"
 
 @interface DLImageLoader()
 
@@ -29,75 +29,41 @@
 
 @implementation DLImageLoader
 
-static DLImageLoader *_sharedInstance = nil;
-
 + (DLImageLoader *)sharedInstance
 {
-    static DLImageLoader* sharedInstance;
+    static DLImageLoader* instance;
     static dispatch_once_t token;
     dispatch_once(&token, ^{
-        sharedInstance = [[self alloc] init];
+        instance = [[self alloc] init];
+        instance.operationQueue = [[NSOperationQueue alloc] init];
+        instance.cacheManager = [[DLILCacheManager alloc] init];
+        instance.isDLILLogEnabled = NO;
     });
-    return sharedInstance;
-}
-
-- (id)init
-{
-    if (self = [super init]) {
-        self.operationQueue = [[NSOperationQueue alloc] init];
-        self.cacheManager = [[DLILCacheManager alloc] init];
-        self.dlilLogEnable = YES;
-        self.operationsLimit = 3;
-    }
-    return self;
-}
-
-- (void)loadDataFromUrl:(NSString *)urlString
-              completed:(void (^)(NSError *, NSData *))completed
-{
-    // stop operations if more than limit.
-    if ([[self.operationQueue operations] count] == self.operationsLimit) {
-        [self stopDataLoading];
-    }
-    [self.operationQueue setSuspended:YES];
-    // add new operation for loading data by url
-    [self.operationQueue addOperationWithBlock:^{
-        if (self.dlilLogEnable) NSLog(@"DLImageLoader start data loading");
-        
-        NSError *error = nil;
-        NSData *image = nil;
-        NSURL *url = [NSURL URLWithString:urlString];
-        
-        image = [self.cacheManager imageFromCache:urlString];
-        if (image == nil && url != nil) {
-            if (self.dlilLogEnable) NSLog(@"DLImageLoader loading from url");
-            
-            image = [NSData dataWithContentsOfURL:url options:0 error:&error];
-            
-            if (self.dlilLogEnable) NSLog(@"DLImageLoader saving to cache");
-            
-            [self.cacheManager addNewImageToCache:image url:urlString];
-            [self.cacheManager saveCache];
-        }
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            if (self.dlilLogEnable) NSLog(@"DLImageLoader data loading completed");
-            
-            if (completed) {
-                completed(error, image);
-            }
-        }];
-    }];
-    [self.operationQueue setSuspended:NO];
+    return instance;
 }
 
 - (void)loadImageFromUrl:(NSString *)urlString
                completed:(void (^)(NSError *, UIImage *))completed
 {
-    [self loadDataFromUrl:urlString completed:^(NSError *error, NSData *data) {
-        if (completed) {
-            completed(error, [UIImage imageWithData:data]);
-        }
+    [self loadImageFromUrl:urlString completed:^(NSError *error, UIImage *image) {
+        if (completed) completed(error, image);
+    } canceled:nil];
+}
+
+- (void)loadImageFromUrl:(NSString *)urlString
+               completed:(void (^)(NSError *, UIImage *))completed
+                canceled:(void (^)())canceled
+{
+    if (self.isDLILLogEnabled) NSLog(@"DLImageLoader start data loading from %@", urlString);
+    DLILOperation *operation = [[DLILOperation alloc] initWithUrl:urlString];
+    [operation startLoadingWithCompletion:^(NSError *error, UIImage *image) {
+        if (self.isDLILLogEnabled) NSLog(@"DLImageLoader data loading completed");
+        if (completed) completed(error, image);
+    } canceled:^{
+        if (self.isDLILLogEnabled) NSLog(@"DLImageLoader data loading canceled");
+        if (canceled) canceled();
     }];
+    [self.operationQueue addOperation:operation];
 }
 
 - (void)displayImageFromUrl:(NSString *)urlString
@@ -107,12 +73,16 @@ static DLImageLoader *_sharedInstance = nil;
     [self loadImageFromUrl:urlString completed:^(NSError *error, UIImage *image) {
         imageView.image = image;
         [imageView setNeedsDisplay];
+    } canceled:^{
+        imageView.image = nil;
     }];
 }
 
 - (void)stopDataLoading
 {
-    [self.operationQueue cancelAllOperations];
+    for (DLILOperation *operation in self.operationQueue.operations) {
+        [operation cancelLoading];
+    }
 }
 
 @end

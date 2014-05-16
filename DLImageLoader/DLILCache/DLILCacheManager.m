@@ -17,68 +17,121 @@
 //  limitations under the License.
 
 #import "DLILCacheManager.h"
-#import "DLILCache.h"
 
-NSString * const CACHE_FILE = @"cache.txt";
+static NSString *kCacheFolderName = @"DLILCacheFolder";
 
-#define	Documents [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]
-
-@interface DLILCacheManager()
-
-@property (nonatomic, strong) DLILCache *cache;
+@interface DLILCacheManager() {
+    NSCache *cache;
+}
 
 @end
 
 @implementation DLILCacheManager
 
-static DLILCacheManager *_sharedInstance = nil;
-
-- (id)init {
-    self = [super init];
-    if (self) {
-        self.cache = [self loadCache];
++ (instancetype)sharedInstance
+{
+    static DLILCacheManager *instance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        instance = [self new];
+        instance->cache = [NSCache new];
+        instance->_memoryCacheEnabled = YES;
+        instance->_diskCacheEnabled = YES;
+        [[NSNotificationCenter defaultCenter] addObserver:instance
+                                                 selector:@selector(UIApplicationWillResignActiveNotification:)
+                                                     name:UIApplicationWillResignActiveNotification
+                                                   object:nil];
+        [[NSFileManager defaultManager] createDirectoryAtPath:[instance directory]
+                                  withIntermediateDirectories:NO
+                                                   attributes:nil
+                                                        error:nil];
         
-        /* If scheme is not exist create new scheme */
-        if (!self.cache) {
-            self.cache = [[DLILCache alloc] init];
-//            [self saveCache];
+    });
+    return instance;
+}
+
+- (UIImage *)imageByKey:(NSString *)key
+{
+    UIImage *image = nil;
+    if (_memoryCacheEnabled) {
+        image = [cache objectForKey:key];
+    }
+    if (!image) {
+        if (_diskCacheEnabled) {
+            image = [self imageFromDisk:key];
         }
     }
-    return self;
+    return image;
+}
+
+- (void)performWithImage:(UIImage *)image andKey:(NSString *)key
+{
+    if (_memoryCacheEnabled) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            if (image) {
+                [cache setObject:image forKey:key];
+            }
+        });
+    }
+    if (_diskCacheEnabled) {
+        __block typeof(self) weakSelf = self;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            [weakSelf saveToSandBoxImage:image withKey:key];
+        });
+    }
+}
+
+- (void)saveToSandBoxImage:(UIImage *)image withKey:(NSString *)key
+{
+    NSString *path = [self pathToImageWithKey:key];
+    NSData *data = UIImagePNGRepresentation(image);
+    [data writeToFile:path atomically:YES];
+}
+
+- (UIImage *)imageFromDisk:(NSString *)key
+{
+    NSString *path = [self pathToImageWithKey:key];
+    return [UIImage imageWithContentsOfFile:path];
+}
+
+- (NSString *)pathToImageWithKey:(NSString *)key
+{
+    NSString *path = [self directory];
+    NSArray *array = [key componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@":/"]];
+    for (int i = 0; i < array.count; i++) {
+        NSString *s = array[i];
+        if ([s isEqualToString:@""]) continue;
+        
+        path = [path stringByAppendingPathComponent:s];
+        if (i != array.count -1) {
+            if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+                [[NSFileManager defaultManager] createDirectoryAtPath:path
+                                          withIntermediateDirectories:NO
+                                                           attributes:nil
+                                                                error:nil];
+            }
+        }
+    }
+    return path;
+}
+
+- (NSString *)directory
+{
+    NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+    return [path stringByAppendingPathComponent:kCacheFolderName];
 }
 
 #pragma mark -
-#pragma mark - Save and Load cache
+#pragma mark - Cache
 
-- (void)saveCache {
-    NSData *objectsToSave = [NSKeyedArchiver archivedDataWithRootObject:self.cache];
-    [objectsToSave writeToFile:[Documents stringByAppendingPathComponent:CACHE_FILE]
-                    atomically:YES];
+- (void)setCacheInMemory:(BOOL)enabled
+{
+    _memoryCacheEnabled = enabled;
 }
 
-/** 
-    Loads cache
-    @return Saved cache
- */
-- (DLILCache *)loadCache {
-    NSData * objectsLoaded = [NSData dataWithContentsOfFile:[Documents stringByAppendingPathComponent:CACHE_FILE]];
-    if (!objectsLoaded) {
-        return nil;
-    }else{
-        return [NSKeyedUnarchiver unarchiveObjectWithData:objectsLoaded];
-    }
-}
-
-- (NSData *)imageFromCache:(NSString *)url {
-    return [self.cache.images valueForKey:url];
-}
-
-- (void)addNewImageToCache:(NSData *)image url:(NSString *)url {
-    [self.cache.images setValue:image forKey:url];
-}
-
-- (void)deleteImageFromCache:(NSString *)url {
-    [self.cache.images removeObjectForKey:url];
+- (void)setCacheInDisk:(BOOL)enabled
+{
+    _diskCacheEnabled = enabled;
 }
 
 @end

@@ -10,6 +10,6 @@
 
 @interface CollectionViewCell : UICollectionViewCell
 
-@property (weak, nonatomic) IBOutlet UIImageView *thumbnailView;
+- (void)fillWithUrl:(NSString *)url;
 
 @end

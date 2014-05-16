@@ -7,6 +7,14 @@
 //
 
 #import "TableViewCell.h"
+#import "DLImageLoader.h"
+
+@interface TableViewCell()
+
+@property (weak, nonatomic) IBOutlet UIImageView *thumbnailView;
+@property (weak, nonatomic) IBOutlet UILabel *title;
+
+@end
 
 @implementation TableViewCell
 
@@ -29,6 +37,13 @@
     [super setSelected:selected animated:animated];
 
     // Configure the view for the selected state
+}
+
+- (void)fillWithUrl:(NSString *)url index:(NSInteger)index
+{
+    [self.title setText:[NSString stringWithFormat:@"Item = %d", index]];
+    [[DLImageLoader sharedInstance] displayImageFromUrl:url
+                                              imageView:self.thumbnailView];
 }
 
 @end

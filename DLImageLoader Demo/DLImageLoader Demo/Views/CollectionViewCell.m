@@ -7,6 +7,13 @@
 //
 
 #import "CollectionViewCell.h"
+#import "DLImageView.h"
+
+@interface CollectionViewCell()
+
+@property (weak, nonatomic) IBOutlet DLImageView *thumbnailView;
+
+@end
 
 @implementation CollectionViewCell
 
@@ -27,5 +34,14 @@
     // Drawing code
 }
 */
+
+- (void)fillWithUrl:(NSString *)url
+{
+    [self.thumbnailView cancelLoading];
+    self.thumbnailView.image = nil;
+    [self.thumbnailView loadImageFromUrl:url completed:^(NSError *error, UIImage *image) {
+        self.thumbnailView.image = image;
+    }];
+}
 
 @end

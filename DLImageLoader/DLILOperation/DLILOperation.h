@@ -1,5 +1,5 @@
 //
-//  DLILCache.m
+//  DLILOperation.h
 //
 //  Created by Andrey Lunevich
 //  Copyright 2013-2014 Andrey Lunevich. All rights reserved.
@@ -16,33 +16,20 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#import "DLILCache.h"
+#import <Foundation/Foundation.h>
 
-NSString * const IMAGES = @"images";
+typedef void (^CompletionBlock)(NSError *error, UIImage *image);
+typedef void (^CancelBlock)();
 
-@implementation DLILCache
+@interface DLILOperation : NSOperation <NSURLConnectionDelegate>
 
-- (id)init {
-    self = [super init];
-    if (self) {
-        self.images = [[NSMutableDictionary alloc] init];
-    }
-    return self;
-}
+@property (nonatomic, copy) NSString *url;
 
-#pragma mark -
-#pragma mark - Coding data
+- (id)initWithUrl:(NSString *)url;
 
-- (void)encodeWithCoder:(NSCoder *)aCoder {
-    [aCoder encodeObject:self.images forKey:IMAGES];
-}
+- (void)startLoadingWithCompletion:(CompletionBlock)completed
+                          canceled:(CancelBlock)canceled;
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
-    self = [super init];
-    if (self) {
-        self.images = [aDecoder decodeObjectForKey:IMAGES];
-    }
-    return self;
-}
+- (void)cancelLoading;
 
 @end

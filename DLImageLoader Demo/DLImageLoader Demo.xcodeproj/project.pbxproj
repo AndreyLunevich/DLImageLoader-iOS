@@ -17,9 +17,10 @@
 		A020EC001790A29E00CDEE09 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A020EBFF1790A29E00CDEE09 /* Default@2x.png */; };
 		A020EC021790A29E00CDEE09 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A020EC011790A29E00CDEE09 /* Default-568h@2x.png */; };
 		A020EC141790A2DA00CDEE09 /* TableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A020EC121790A2DA00CDEE09 /* TableViewController.m */; };
-		A020EC241790A3F600CDEE09 /* DLILCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A020EC1C1790A3F600CDEE09 /* DLILCache.m */; };
 		A020EC251790A3F600CDEE09 /* DLILCacheManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A020EC1E1790A3F600CDEE09 /* DLILCacheManager.m */; };
 		A020EC271790A3F600CDEE09 /* DLImageLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = A020EC231790A3F600CDEE09 /* DLImageLoader.m */; };
+		D8116A7E1925645B0006E4F3 /* DLILOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = D8116A7D1925645B0006E4F3 /* DLILOperation.m */; };
+		D8116A8819256A4B0006E4F3 /* DLImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8116A8719256A4B0006E4F3 /* DLImageView.m */; };
 		D864DB6518EF551B008EBC6C /* iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D864DB6418EF551B008EBC6C /* iPhone.storyboard */; };
 		D864DB6918EF5677008EBC6C /* TableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D864DB6818EF5677008EBC6C /* TableViewCell.m */; };
 		D864DB6C18EF5CB4008EBC6C /* CollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D864DB6B18EF5CB4008EBC6C /* CollectionViewCell.m */; };
@@ -42,12 +43,14 @@
 		A020EC011790A29E00CDEE09 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		A020EC111790A2DA00CDEE09 /* TableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableViewController.h; sourceTree = "<group>"; };
 		A020EC121790A2DA00CDEE09 /* TableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableViewController.m; sourceTree = "<group>"; };
-		A020EC1B1790A3F600CDEE09 /* DLILCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLILCache.h; sourceTree = "<group>"; };
-		A020EC1C1790A3F600CDEE09 /* DLILCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLILCache.m; sourceTree = "<group>"; };
 		A020EC1D1790A3F600CDEE09 /* DLILCacheManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLILCacheManager.h; sourceTree = "<group>"; };
 		A020EC1E1790A3F600CDEE09 /* DLILCacheManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLILCacheManager.m; sourceTree = "<group>"; };
 		A020EC221790A3F600CDEE09 /* DLImageLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLImageLoader.h; sourceTree = "<group>"; };
 		A020EC231790A3F600CDEE09 /* DLImageLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLImageLoader.m; sourceTree = "<group>"; };
+		D8116A7C1925645B0006E4F3 /* DLILOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLILOperation.h; sourceTree = "<group>"; };
+		D8116A7D1925645B0006E4F3 /* DLILOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLILOperation.m; sourceTree = "<group>"; };
+		D8116A8619256A4B0006E4F3 /* DLImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLImageView.h; sourceTree = "<group>"; };
+		D8116A8719256A4B0006E4F3 /* DLImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLImageView.m; sourceTree = "<group>"; };
 		D864DB6418EF551B008EBC6C /* iPhone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = iPhone.storyboard; sourceTree = "<group>"; };
 		D864DB6718EF5677008EBC6C /* TableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableViewCell.h; sourceTree = "<group>"; };
 		D864DB6818EF5677008EBC6C /* TableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableViewCell.m; sourceTree = "<group>"; };
@@ -140,9 +143,12 @@
 		A020EC191790A3F600CDEE09 /* DLImageLoader */ = {
 			isa = PBXGroup;
 			children = (
+				D8116A7B1925644C0006E4F3 /* DLILOperation */,
 				A020EC1A1790A3F600CDEE09 /* DLILCache */,
 				A020EC221790A3F600CDEE09 /* DLImageLoader.h */,
 				A020EC231790A3F600CDEE09 /* DLImageLoader.m */,
+				D8116A8619256A4B0006E4F3 /* DLImageView.h */,
+				D8116A8719256A4B0006E4F3 /* DLImageView.m */,
 			);
 			path = DLImageLoader;
 			sourceTree = "<group>";
@@ -150,12 +156,19 @@
 		A020EC1A1790A3F600CDEE09 /* DLILCache */ = {
 			isa = PBXGroup;
 			children = (
-				A020EC1B1790A3F600CDEE09 /* DLILCache.h */,
-				A020EC1C1790A3F600CDEE09 /* DLILCache.m */,
 				A020EC1D1790A3F600CDEE09 /* DLILCacheManager.h */,
 				A020EC1E1790A3F600CDEE09 /* DLILCacheManager.m */,
 			);
 			path = DLILCache;
+			sourceTree = "<group>";
+		};
+		D8116A7B1925644C0006E4F3 /* DLILOperation */ = {
+			isa = PBXGroup;
+			children = (
+				D8116A7C1925645B0006E4F3 /* DLILOperation.h */,
+				D8116A7D1925645B0006E4F3 /* DLILOperation.m */,
+			);
+			path = DLILOperation;
 			sourceTree = "<group>";
 		};
 		D864DB6618EF5664008EBC6C /* Views */ = {
@@ -238,11 +251,12 @@
 				D864DB6918EF5677008EBC6C /* TableViewCell.m in Sources */,
 				A020EBF81790A29E00CDEE09 /* main.m in Sources */,
 				A020EBFC1790A29E00CDEE09 /* AppDelegate.m in Sources */,
+				D8116A8819256A4B0006E4F3 /* DLImageView.m in Sources */,
 				A020EC141790A2DA00CDEE09 /* TableViewController.m in Sources */,
-				A020EC241790A3F600CDEE09 /* DLILCache.m in Sources */,
 				A020EC251790A3F600CDEE09 /* DLILCacheManager.m in Sources */,
 				D864DB6C18EF5CB4008EBC6C /* CollectionViewCell.m in Sources */,
 				A020EC271790A3F600CDEE09 /* DLImageLoader.m in Sources */,
+				D8116A7E1925645B0006E4F3 /* DLILOperation.m in Sources */,
 				D864DB6F18EF5DAE008EBC6C /* CollectionViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
