@@ -30,7 +30,6 @@
     [super viewDidLoad];
     self.urls = @[
                   @"http://pavellunevich.com/Folders/Illustrations/2127681691.png",
-                  @"http://imgs.mi9.com/uploads/female-celebrities/4700/lisha-cuthbert-sexy-girl-wallpaper_2816x2112_84356.jpg",
                   @"http://pavellunevich.com/Folders/Illustrations/757637590.png",
                   @"http://pavellunevich.com/Folders/Illustrations/1429149926.png",
                   @"http://pavellunevich.com/Folders/Illustrations/1321129696.png",
