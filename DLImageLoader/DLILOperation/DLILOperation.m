@@ -84,6 +84,7 @@
     [connection cancel];
     connection = nil;
     request = nil;
+    [requestData setData:[NSData dataWithBytes:NULL length:0]];
     if (self.canceled) self.canceled();
 }
 
