@@ -28,6 +28,10 @@
 - (void)loadImageFromUrl:(NSString *)urlString
                completed:(void(^)(NSError *error, UIImage *image))completed;
 
-- (void)cancelLoading;
+/**
+ Display image from url
+ @param urlString The url of image.
+ */
+- (void)displayImageFromUrl:(NSString *)urlString;
 
 @end

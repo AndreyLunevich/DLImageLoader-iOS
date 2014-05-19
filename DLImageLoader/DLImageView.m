@@ -27,9 +27,9 @@
 
 @implementation DLImageView
 
-- (id)init
+- (id)initWithFrame:(CGRect)frame
 {
-    self = [super init];
+    self = [super initWithFrame:frame];
     if (self) {
         [self prepareDLImageView];
     }
@@ -47,17 +47,21 @@
     self.operation = [[DLILOperation alloc] init];
 }
 
+- (void)displayImageFromUrl:(NSString *)urlString
+{
+    [self loadImageFromUrl:urlString completed:^(NSError *error, UIImage *image) {
+        self.image = image;
+    }];
+}
+
 - (void)loadImageFromUrl:(NSString *)urlString completed:(void (^)(NSError *, UIImage *))completed
 {
+    self.image = nil;
+    [self.operation cancelLoading];
     [self.operation setUrl:urlString];
     [self.operation startLoadingWithCompletion:^(NSError *error, UIImage *image) {
         if (completed) completed(error, image);
     } canceled:nil];
-}
-
-- (void)cancelLoading
-{
-    [self.operation cancelLoading];
 }
 
 @end

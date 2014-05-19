@@ -1,5 +1,5 @@
 //
-//  DLImageView.h
+//  DLIL.h
 //
 //  Created by Andrey Lunevich
 //  Copyright 2013-2014 Andrey Lunevich. All rights reserved.
@@ -16,22 +16,5 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#import <UIKit/UIKit.h>
-
-@interface DLImageView : UIImageView
-
-/**
- Load image from url
- @param urlString The url of image.
- @param completed Completed is a completion block that will call after image loading.
- */
-- (void)loadImageFromUrl:(NSString *)urlString
-               completed:(void(^)(NSError *error, UIImage *image))completed;
-
-/**
- Display image from url
- @param urlString The url of image.
- */
-- (void)displayImageFromUrl:(NSString *)urlString;
-
-@end
+#import "DLImageLoader.h"
+#import "DLImageView.h"

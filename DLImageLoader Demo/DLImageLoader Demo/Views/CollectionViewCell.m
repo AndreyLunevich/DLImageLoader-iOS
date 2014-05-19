@@ -37,11 +37,7 @@
 
 - (void)fillWithUrl:(NSString *)url
 {
-    [self.thumbnailView cancelLoading];
-    self.thumbnailView.image = nil;
-    [self.thumbnailView loadImageFromUrl:url completed:^(NSError *error, UIImage *image) {
-        self.thumbnailView.image = image;
-    }];
+    [self.thumbnailView displayImageFromUrl:url];
 }
 
 @end

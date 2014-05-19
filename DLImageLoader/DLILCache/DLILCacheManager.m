@@ -37,10 +37,6 @@ static NSString *kCacheFolderName = @"DLILCacheFolder";
         instance->cache = [NSCache new];
         instance->_memoryCacheEnabled = YES;
         instance->_diskCacheEnabled = YES;
-        [[NSNotificationCenter defaultCenter] addObserver:instance
-                                                 selector:@selector(UIApplicationWillResignActiveNotification:)
-                                                     name:UIApplicationWillResignActiveNotification
-                                                   object:nil];
         [[NSFileManager defaultManager] createDirectoryAtPath:[instance directory]
                                   withIntermediateDirectories:NO
                                                    attributes:nil

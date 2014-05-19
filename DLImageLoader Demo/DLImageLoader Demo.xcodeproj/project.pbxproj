@@ -51,6 +51,7 @@
 		D8116A7D1925645B0006E4F3 /* DLILOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLILOperation.m; sourceTree = "<group>"; };
 		D8116A8619256A4B0006E4F3 /* DLImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLImageView.h; sourceTree = "<group>"; };
 		D8116A8719256A4B0006E4F3 /* DLImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLImageView.m; sourceTree = "<group>"; };
+		D818101B192A20E8001762A2 /* DLIL.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DLIL.h; sourceTree = "<group>"; };
 		D864DB6418EF551B008EBC6C /* iPhone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = iPhone.storyboard; sourceTree = "<group>"; };
 		D864DB6718EF5677008EBC6C /* TableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableViewCell.h; sourceTree = "<group>"; };
 		D864DB6818EF5677008EBC6C /* TableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableViewCell.m; sourceTree = "<group>"; };
@@ -149,6 +150,7 @@
 				A020EC231790A3F600CDEE09 /* DLImageLoader.m */,
 				D8116A8619256A4B0006E4F3 /* DLImageView.h */,
 				D8116A8719256A4B0006E4F3 /* DLImageView.m */,
+				D818101B192A20E8001762A2 /* DLIL.h */,
 			);
 			path = DLImageLoader;
 			sourceTree = "<group>";
