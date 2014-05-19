@@ -37,7 +37,7 @@
 {
     self = [super init];
     if (self) {
-        self.url = url;
+        [self configWithUrl:url];
     }
     return self;
 }
@@ -46,9 +46,15 @@
 {
     self = [super init];
     if (self) {
-        requestData = [NSMutableData new];
+        [self configWithUrl:nil];
     }
     return self;
+}
+
+- (void)configWithUrl:(NSString *)url
+{
+    self.url = url;
+    requestData = [NSMutableData new];
 }
 
 - (void)startLoadingWithCompletion:(CompletionBlock)completed
