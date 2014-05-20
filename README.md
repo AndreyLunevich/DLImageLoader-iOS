@@ -57,7 +57,7 @@ Alternatively you can directly add the `DLImageLoader` folder to your project.
 
 ## Applications using DLImageLoader
 
-[Naomuseum](https://itunes.apple.com/ru/app/naomuseum/id847290457?mt=8) | [Aerobia](https://itunes.apple.com/us/app/aerobia/id566375588?mt=8)
+[Naomuseum](https://itunes.apple.com/ru/app/naomuseum/id847290457?mt=8) | [Aerobia](https://itunes.apple.com/us/app/aerobia/id566375588?mt=8) | [Easy](https://itunes.apple.com/us/app/easy/id874395902?ls=1&mt=8)
 
 ## License
 
