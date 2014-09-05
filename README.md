@@ -58,7 +58,7 @@ Alternatively you can directly add the `DLImageLoader` folder to your project.
 ## Applications using DLImageLoader
 
 [Naomuseum](https://itunes.apple.com/ru/app/naomuseum/id847290457?mt=8) | [Aerobia](https://itunes.apple.com/us/app/aerobia/id566375588?mt=8) | [StreetForm](https://itunes.apple.com/us/app/easy/id874395902?ls=1&mt=8) |
-[Plusarium](https://itunes.apple.com/us/app/plusarium/id901280642?l=ru&ls=1&mt=8)
+[Plusarium](https://itunes.apple.com/us/app/plusarium/id901280642?l=ru&ls=1&mt=8) | [Nootri The Nutrition Manager](https://itunes.apple.com/US/app/id912109727?mt=8)
 
 ## License
 
