@@ -14,7 +14,7 @@ This project aims to provide a reusable instrument for asynchronous image loadin
 
 1. Add a pod entry for DLImageLoader to your Podfile `pod 'DLImageLoader', '~> 2.0.0'`
 2. Install the pod(s) by running `pod install`.
-3. Include DLImageLoader wherever you need it with `#import "DLImageLoader.h"`.
+3. Include DLImageLoader wherever you need it with `#import "DLIL.h"`.
 
 ### Source files
 
