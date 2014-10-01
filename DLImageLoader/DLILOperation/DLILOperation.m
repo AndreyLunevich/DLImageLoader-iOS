@@ -54,6 +54,7 @@
 - (void)configWithUrl:(NSString *)url
 {
     self.url = url;
+    self.overwriteCache = NO;
     requestData = [NSMutableData new];
 }
 
@@ -66,11 +67,13 @@
         return;
     }
     
-    UIImage *cachedImage = [[DLILCacheManager sharedInstance] imageByKey:self.url];
-    if (cachedImage) {
-        // successfull loading
-        if (completed) completed(nil, cachedImage);
-        return;
+    if (!self.overwriteCache) {
+        UIImage *cachedImage = [[DLILCacheManager sharedInstance] imageByKey:self.url];
+        if (cachedImage) {
+            // successfull loading
+            if (completed) completed(nil, cachedImage);
+            return;
+        }
     }
     
     self.completed = completed;

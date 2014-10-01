@@ -24,6 +24,7 @@ typedef void (^CancelBlock)();
 @interface DLILOperation : NSOperation <NSURLConnectionDelegate>
 
 @property (nonatomic, copy) NSString *url;
+@property (nonatomic) BOOL overwriteCache;
 
 - (id)initWithUrl:(NSString *)url;
 

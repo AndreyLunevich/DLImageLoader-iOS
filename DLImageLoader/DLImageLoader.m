@@ -38,6 +38,7 @@
         instance.operationQueue = [[NSOperationQueue alloc] init];
         instance.cacheManager = [[DLILCacheManager alloc] init];
         instance.isDLILLogEnabled = NO;
+        instance.overwriteCache = NO;
     });
     return instance;
 }
@@ -56,6 +57,7 @@
 {
     if (self.isDLILLogEnabled) NSLog(@"DLImageLoader start data loading from %@", urlString);
     DLILOperation *operation = [[DLILOperation alloc] initWithUrl:urlString];
+    operation.overwriteCache = self.overwriteCache;
     [operation startLoadingWithCompletion:^(NSError *error, UIImage *image) {
         if (self.isDLILLogEnabled) NSLog(@"DLImageLoader data loading completed");
         if (completed) completed(error, image);
