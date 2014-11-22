@@ -33,8 +33,8 @@ static NSString *kCacheFolderName = @"DLILCacheFolder";
     static DLILCacheManager *instance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        instance = [self new];
-        instance->cache = [NSCache new];
+        instance = [[self alloc] init];
+        instance->cache = [[NSCache alloc] init];
         instance->_memoryCacheEnabled = YES;
         instance->_diskCacheEnabled = YES;
         [[NSFileManager defaultManager] createDirectoryAtPath:[instance directory]
@@ -60,7 +60,7 @@ static NSString *kCacheFolderName = @"DLILCacheFolder";
     return image;
 }
 
-- (void)performWithImage:(UIImage *)image andKey:(NSString *)key
+- (void)saveImage:(UIImage *)image byKey:(NSString *)key
 {
     if (_memoryCacheEnabled) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
@@ -117,17 +117,21 @@ static NSString *kCacheFolderName = @"DLILCacheFolder";
     return [path stringByAppendingPathComponent:kCacheFolderName];
 }
 
-#pragma mark -
-#pragma mark - Cache
+#pragma mark - clear methods
 
-- (void)setCacheInMemory:(BOOL)enabled
+- (void)clear
 {
-    _memoryCacheEnabled = enabled;
-}
-
-- (void)setCacheInDisk:(BOOL)enabled
-{
-    _diskCacheEnabled = enabled;
+    [cache removeAllObjects];
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSError *error = nil;
+    NSString *directory = [self directory];
+    NSArray *files = [fm contentsOfDirectoryAtPath:directory error:&error];
+    for (NSString *file in files) {
+        BOOL success = [fm removeItemAtPath:[NSString stringWithFormat:@"%@%@", directory, file] error:&error];
+        if (!success || error) {
+            // it failed.
+        }
+    }
 }
 
 @end

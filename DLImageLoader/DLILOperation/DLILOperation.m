@@ -20,14 +20,11 @@
 #import "DLILCacheManager.h"
 
 @interface DLILOperation()
-{
-    NSMutableData *requestData;
-    NSURLConnection *connection;
-    NSURLRequest *request;
-}
 
 @property (nonatomic, copy) CompletionBlock completed;
 @property (nonatomic, copy) CancelBlock canceled;
+@property (nonatomic, strong) NSMutableData *data;
+@property (nonatomic, strong) NSURLConnection *connection;
 
 @end
 
@@ -54,8 +51,22 @@
 - (void)configWithUrl:(NSString *)url
 {
     self.url = url;
-    self.overwriteCache = NO;
-    requestData = [NSMutableData new];
+    self.data = [[NSMutableData alloc] init];
+}
+
+- (void)start
+{
+    if (![NSThread isMainThread]) {
+        [self performSelectorOnMainThread:@selector(start) withObject:nil waitUntilDone:NO];
+        return;
+    }
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:_url]];
+    _connection = [[NSURLConnection alloc] initWithRequest:request
+                                                  delegate:self];
+    if (_connection == nil) {
+        [self cancel];
+    }
 }
 
 - (void)startLoadingWithCompletion:(CompletionBlock)completed
@@ -67,27 +78,15 @@
         return;
     }
     
-    if (!self.overwriteCache) {
-        UIImage *cachedImage = [[DLILCacheManager sharedInstance] imageByKey:self.url];
-        if (cachedImage) {
-            // successfull loading
-            if (completed) completed(nil, cachedImage);
-            return;
-        }
-    }
-    
     self.completed = completed;
     self.canceled = canceled;
-    request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.url]];
-    connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
 }
 
-- (void)cancelLoading
+- (void)cancel
 {
-    [connection cancel];
-    connection = nil;
-    request = nil;
-    [requestData setData:[NSData dataWithBytes:NULL length:0]];
+    [_connection cancel];
+    _connection = nil;
+    [self.data setData:[NSData dataWithBytes:NULL length:0]];
     if (self.canceled) self.canceled();
 }
 
@@ -95,13 +94,13 @@
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
 {
-    [requestData appendData:data];
+    [self.data appendData:data];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
-    UIImage *image = [UIImage imageWithData:requestData];
-    [[DLILCacheManager sharedInstance] performWithImage:image andKey:self.url];
+    UIImage *image = [UIImage imageWithData:self.data];
+    [[DLILCacheManager sharedInstance] saveImage:image byKey:self.url];
     // successfull loading
     if (self.completed) self.completed(nil, image);
 }

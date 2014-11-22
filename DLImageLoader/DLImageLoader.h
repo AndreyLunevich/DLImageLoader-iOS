@@ -21,12 +21,6 @@
 @interface DLImageLoader : NSObject
 
 /**
- DLImageLoader overwriteCache
- Default value NO
- **/
-@property (nonatomic) BOOL overwriteCache;
-
-/**
  DLImageLoader logger
  Default value YES
  **/
@@ -65,8 +59,19 @@
                   imageView:(UIImageView *)imageView;
 
 /**
+ Cancel operation
+ @param url. Url of operation to stop
+ */
+- (void)cancelOperation:(NSString *)url;
+
+/**
  Stop all active operations
  */
-- (void)stopDataLoading;
+- (void)cancelAllOperations;
+
+/**
+ Clear cache of DLImageLoader
+ */
+- (void)clearCache;
 
 @end

@@ -21,25 +21,29 @@
 @interface DLILCacheManager : NSObject
 
 /**
- memory cache
+ Memory cache
  @param memoryCacheEnabled by default is YES
  **/
-@property (nonatomic, readonly, getter = isMemoryCacheEnabled) BOOL memoryCacheEnabled;
+@property (nonatomic, readonly) BOOL memoryCacheEnabled;
 
 /**
- disk cache
+ Disk cache
  @param diskCacheEnabled by default is YES
  **/
-@property (nonatomic, readonly, getter = isDiskCacheEnabled) BOOL diskCacheEnabled;
+@property (nonatomic, readonly) BOOL diskCacheEnabled;
 
 + (instancetype)sharedInstance;
 
-- (void)setCacheInMemory:(BOOL)enabled;
+/**
+ Save the image in the cache for the key.
+ @param image. UIImage to save in cache.
+ @param key. Key of image in cache.
+ */
+- (void)saveImage:(UIImage *)image byKey:(NSString *)key;
 
-- (void)setCacheInDisk:(BOOL)enabled;
-
-- (UIImage *)imageByKey:(NSString *)key;
-
-- (void)performWithImage:(UIImage *)image andKey:(NSString *)key;
+/**
+ Clear memory and disk cache
+ */
+- (void)clear;
 
 @end

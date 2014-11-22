@@ -13,19 +13,11 @@
 
 @property (weak, nonatomic) IBOutlet UIImageView *thumbnailView;
 @property (weak, nonatomic) IBOutlet UILabel *title;
+@property (nonatomic, copy) NSString *url;
 
 @end
 
 @implementation TableViewCell
-
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-        // Initialization code
-    }
-    return self;
-}
 
 - (void)awakeFromNib
 {
@@ -35,13 +27,19 @@
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
     [super setSelected:selected animated:animated];
-
     // Configure the view for the selected state
+}
+
+- (void)prepareForReuse
+{
+    [super prepareForReuse];
+    [[DLImageLoader sharedInstance] cancelOperation:self.url];
 }
 
 - (void)fillWithUrl:(NSString *)url index:(NSInteger)index
 {
-    [self.title setText:[NSString stringWithFormat:@"Item = %d", index]];
+    self.url = url;
+    [self.title setText:[NSString stringWithFormat:@"Item = %ld", (long)index]];
     [[DLImageLoader sharedInstance] displayImageFromUrl:url
                                               imageView:self.thumbnailView];
 }
