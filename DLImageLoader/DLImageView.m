@@ -76,7 +76,7 @@
 
 - (void)cancelLoading
 {
-    [self.operation cancelLoading];
+    [self.operation cancel];
 }
 
 @end
