@@ -127,8 +127,8 @@ static NSString *kCacheFolderName = @"DLILCacheFolder";
     NSString *directory = [self directory];
     NSArray *files = [fm contentsOfDirectoryAtPath:directory error:&error];
     for (NSString *file in files) {
-        BOOL success = [fm removeItemAtPath:[NSString stringWithFormat:@"%@%@", directory, file] error:&error];
-        if (!success || error) {
+        [fm removeItemAtPath:[NSString stringWithFormat:@"%@%@", directory, file] error:&error];
+        if (error) {
             // it failed.
         }
     }

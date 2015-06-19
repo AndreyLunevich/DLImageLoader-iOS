@@ -72,9 +72,11 @@
 - (void)startLoadingWithCompletion:(CompletionBlock)completed
                           canceled:(CancelBlock)canceled
 {
-    if (!self.url || [self.url isEqualToString:@""]) {
+    if (self.url.length == 0) {
         // fail loading
-        if (completed) completed(nil, nil);
+        if (completed) {
+            completed(nil, nil);
+        }
         return;
     }
     
@@ -87,7 +89,9 @@
     [_connection cancel];
     _connection = nil;
     [self.data setData:[NSData dataWithBytes:NULL length:0]];
-    if (self.canceled) self.canceled();
+    if (self.canceled) {
+        self.canceled();
+    }
 }
 
 #pragma mark - NSURLConnectionDataDelegate
@@ -102,7 +106,9 @@
     UIImage *image = [UIImage imageWithData:self.data];
     [[DLILCacheManager sharedInstance] saveImage:image byKey:self.url];
     // successfull loading
-    if (self.completed) self.completed(nil, image);
+    if (self.completed) {
+        self.completed(nil, image);
+    }
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error

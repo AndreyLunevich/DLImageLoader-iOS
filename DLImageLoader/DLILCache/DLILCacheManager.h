@@ -32,6 +32,9 @@
  **/
 @property (nonatomic, readonly) BOOL diskCacheEnabled;
 
+/**
+ DLILCacheManager instance
+ **/
 + (instancetype)sharedInstance;
 
 /**

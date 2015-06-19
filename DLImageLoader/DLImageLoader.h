@@ -21,12 +21,6 @@
 @interface DLImageLoader : NSObject
 
 /**
- DLImageLoader logger
- Default value YES
- **/
-@property (nonatomic) BOOL isDLILLogEnabled;
-
-/**
  Instance method
  @return shared instance.
  */

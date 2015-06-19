@@ -20,6 +20,19 @@
 #import "DLILCacheManager.h"
 #import "DLILOperation.h"
 
+
+#if DEBUG
+#	define DLog(fmt, ...) \
+{\
+NSMutableString *__log_str__ = [[NSMutableString alloc]\
+initWithFormat:fmt, ##__VA_ARGS__];\
+fprintf(stderr, "%s %s\n", __FUNCTION__, [__log_str__ UTF8String]);\
+}
+#else
+#    define DLog(...)
+#endif
+
+
 @interface DLImageLoader()
 
 @property (nonatomic, strong) NSOperationQueue *queue;
@@ -37,7 +50,6 @@
         instance = [[self alloc] init];
         instance.queue = [[NSOperationQueue alloc] init];
         instance.cacheManager = [[DLILCacheManager alloc] init];
-        instance.isDLILLogEnabled = NO;
     });
     return instance;
 }
@@ -56,14 +68,18 @@
                completed:(void (^)(NSError *, UIImage *))completed
                 canceled:(void (^)())canceled
 {
-    if (self.isDLILLogEnabled) NSLog(@"DLImageLoader start data loading from %@", urlString);
+    DLog(@"DLImageLoader start data loading from %@", urlString);
     DLILOperation *operation = [[DLILOperation alloc] initWithUrl:urlString];
     [operation startLoadingWithCompletion:^(NSError *error, UIImage *image) {
-        if (self.isDLILLogEnabled) NSLog(@"DLImageLoader data loading completed");
-        if (completed) completed(error, image);
+        DLog(@"DLImageLoader data loading completed: error = %@", error);
+        if (completed) {
+            completed(error, image);
+        }
     } canceled:^{
-        if (self.isDLILLogEnabled) NSLog(@"DLImageLoader data loading canceled");
-        if (canceled) canceled();
+        DLog(@"DLImageLoader data loading canceled");
+        if (canceled) {
+            canceled();
+        }
     }];
     [self.queue addOperation:operation];
 }

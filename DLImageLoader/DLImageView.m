@@ -22,7 +22,6 @@
 @interface DLImageView()
 
 @property (nonatomic, strong) DLILOperation *operation;
-@property (nonatomic, strong) UIActivityIndicatorView *indicator;
 
 @end
 
@@ -46,11 +45,6 @@
 - (void)configureView
 {
     self.contentMode = UIViewContentModeScaleAspectFit;
-    
-    self.indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-    self.indicator.frame = CGRectMake(self.frame.size.width / 2.0f - 10.0f, self.frame.size.height / 2.0f - 10.0f, 20.0f, 20.0f);
-    [self.indicator setHidesWhenStopped:YES];
-    [self addSubview:self.indicator];
 }
 
 - (void)displayImageFromUrl:(NSString *)urlString
@@ -60,17 +54,18 @@
     }];
 }
 
-- (void)loadImageFromUrl:(NSString *)urlString completed:(void (^)(NSError *, UIImage *))completed
+- (void)loadImageFromUrl:(NSString *)urlString
+               completed:(void (^)(NSError *, UIImage *))completed
 {
     self.image = nil;
-    [self.indicator startAnimating];
     if (!self.operation) {
         self.operation = [[DLILOperation alloc] init];
     }
     [self.operation setUrl:urlString];
     [self.operation startLoadingWithCompletion:^(NSError *error, UIImage *image) {
-        [self.indicator stopAnimating];
-        if (completed) completed(error, image);
+        if (completed) {
+            completed(error, image);
+        }
     } canceled:nil];
 }
 
