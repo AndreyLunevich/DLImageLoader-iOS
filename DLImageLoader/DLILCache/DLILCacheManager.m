@@ -92,20 +92,20 @@ static NSString *kCacheFolderName = @"DLILCacheFolder";
 
 - (NSString *)pathToImageWithKey:(NSString *)key
 {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
     NSString *path = [self directory];
     NSArray *array = [key componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@":/"]];
     for (int i = 0; i < array.count; i++) {
         NSString *s = array[i];
-        if ([s isEqualToString:@""]) continue;
-        
+        if (s.length == 0) {
+            continue;
+        }
         path = [path stringByAppendingPathComponent:s];
-        if (i != array.count -1) {
-            if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
-                [[NSFileManager defaultManager] createDirectoryAtPath:path
-                                          withIntermediateDirectories:NO
-                                                           attributes:nil
-                                                                error:nil];
-            }
+        if (i != array.count -1 && ![fileManager fileExistsAtPath:path]) {
+            [fileManager createDirectoryAtPath:path
+                   withIntermediateDirectories:NO
+                                    attributes:nil
+                                         error:nil];
         }
     }
     return path;
@@ -113,7 +113,8 @@ static NSString *kCacheFolderName = @"DLILCacheFolder";
 
 - (NSString *)directory
 {
-    NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *path = [paths firstObject];
     return [path stringByAppendingPathComponent:kCacheFolderName];
 }
 
@@ -122,15 +123,12 @@ static NSString *kCacheFolderName = @"DLILCacheFolder";
 - (void)clear
 {
     [cache removeAllObjects];
-    NSFileManager *fm = [NSFileManager defaultManager];
-    NSError *error = nil;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
     NSString *directory = [self directory];
-    NSArray *files = [fm contentsOfDirectoryAtPath:directory error:&error];
+    NSArray *files = [fileManager contentsOfDirectoryAtPath:directory error:nil];
     for (NSString *file in files) {
-        [fm removeItemAtPath:[NSString stringWithFormat:@"%@%@", directory, file] error:&error];
-        if (error) {
-            // it failed.
-        }
+        NSString *path = [directory stringByAppendingPathComponent:file];
+        [fileManager removeItemAtPath:path error:nil];
     }
 }
 

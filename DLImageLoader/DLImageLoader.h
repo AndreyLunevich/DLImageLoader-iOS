@@ -28,29 +28,28 @@
 
 /**
  Load image from url
- @param urlString The url of image.
+ @param url The url of image.
  @param completed Completed is a completion block that will call after image loading.
  */
-- (void)loadImageFromUrl:(NSString *)urlString
+- (void)loadImageFromUrl:(NSString *)url
                completed:(void(^)(NSError *error, UIImage *image))completed;
 
 /**
  Load image from url
- @param urlString The url of image.
+ @param url The url of image.
  @param completed Completed is a completion block that will call after image loading.
  @param canceled Canceled is a block that will if loading opedation was calceled.
  */
-- (void)loadImageFromUrl:(NSString *)urlString
+- (void)loadImageFromUrl:(NSString *)url
                completed:(void(^)(NSError *error, UIImage *image))completed
                 canceled:(void(^)())canceled;
 
 /**
  Load image from url
- @param urlString The url of image.
+ @param url The url of image.
  @param imageView UIImageView in which will display image.
  */
-- (void)displayImageFromUrl:(NSString *)urlString
-                  imageView:(UIImageView *)imageView;
+- (void)displayImageFromUrl:(NSString *)url imageView:(UIImageView *)imageView;
 
 /**
  Cancel operation

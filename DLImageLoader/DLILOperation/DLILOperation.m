@@ -103,18 +103,18 @@
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
-    UIImage *image = [UIImage imageWithData:self.data];
-    [[DLILCacheManager sharedInstance] saveImage:image byKey:self.url];
     // successfull loading
     if (self.completed) {
-        self.completed(nil, image);
+        self.completed(nil, [UIImage imageWithData:self.data]);
     }
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
     // fail loading
-    if (self.completed) self.completed(error, nil);
+    if (self.completed) {
+        self.completed(error, nil);
+    }
 }
 
 @end

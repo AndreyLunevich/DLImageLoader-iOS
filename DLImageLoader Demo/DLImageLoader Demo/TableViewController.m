@@ -7,7 +7,6 @@
 //
 
 #import "TableViewController.h"
-#import "DLImageLoader.h"
 #import "TableViewCell.h"
 
 @interface TableViewController ()
@@ -18,36 +17,24 @@
 
 @implementation TableViewController
 
-- (id)initWithStyle:(UITableViewStyle)style {
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
     self.urls = @[
-                  @"http://pavellunevich.com/Folders/Illustrations/2127681691.png",
-                  @"http://pavellunevich.com/Folders/Illustrations/757637590.png",
-                  @"http://pavellunevich.com/Folders/Illustrations/1429149926.png",
-                  @"http://pavellunevich.com/Folders/Illustrations/1321129696.png",
-                  @"http://pavellunevich.com/Folders/Graphics/1984135185.png",
-                  @"http://pavellunevich.com/Folders/Paintings/1366779420.png",
-                  @"http://pavellunevich.com/Folders/Paintings/1383399540.png",
-                  @"http://pavellunevich.com/Folders/Paintings/1888084308.png",
-                  @"http://pavellunevich.com/Folders/Paintings/58600467.png",
-                  @"http://pavellunevich.com/Folders/Paintings/1287185856.png",
-                  @"http://pavellunevich.com/Folders/Paintings/1428255199.png",
-                  @"http://pavellunevich.com/Folders/Paintings/2125733428.png",
-                  @"http://pavellunevich.com/Folders/Paintings/1209572488.png",
-                  @"http://pavellunevich.com/Folders/Paintings/881602041.png",
-                  @"http://pavellunevich.com/Folders/Paintings/1968578639.png",
-                 ];
+      @"http://p1.pichost.me/i/64/1885741.jpg",
+      @"https://shechive.files.wordpress.com/2010/09/beautiful-nature-16.jpg",
+      @"http://3.bp.blogspot.com/-6tN1I5I2E-I/VBPFPfQ6fXI/AAAAAAABhbY/XtHIECbqZiY/s1600/papers.co-ac96-wallpaper-apple-iphone6-plus-ios8-flower-green-9-wallpaper.jpg",
+      @"http://www.joomlaworks.net/images/demos/galleries/abstract/7.jpg",
+      @"http://www.online-image-editor.com//styles/2014/images/example_image.png",
+      @"http://www.keenthemes.com/preview/metronic/theme/assets/global/plugins/jcrop/demos/demo_files/image2.jpg",
+      @"http://www.heliconsoft.com/wp-content/uploads/2014/07/Andrea_Hallgass_30_images_full.jpg",
+      @"http://wallpapers111.com/wp-content/uploads/2015/02/3d-nature-wallpapers-5.jpg",
+      @"http://p1.pichost.me/640/67/1913110.jpg"
+    ];
 }
 
-- (void)didReceiveMemoryWarning {
+- (void)didReceiveMemoryWarning
+{
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
@@ -55,11 +42,14 @@
 #pragma mark - Table view data source
 
 - (NSInteger)tableView:(UITableView *)tableView
- numberOfRowsInSection:(NSInteger)section {
+ numberOfRowsInSection:(NSInteger)section
+{
     return [self.urls count];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)tableView
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
     TableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TableViewCell"];
     [cell fillWithUrl:[self.urls objectAtIndex:indexPath.row] index:indexPath.row];
     return cell;

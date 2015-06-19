@@ -25,14 +25,14 @@
  @param urlString The url of image.
  @param completed Completed is a completion block that will call after image loading.
  */
-- (void)loadImageFromUrl:(NSString *)urlString
+- (void)loadImageFromUrl:(NSString *)url
                completed:(void(^)(NSError *error, UIImage *image))completed;
 
 /**
  Display image from url
  @param urlString The url of image.
  */
-- (void)displayImageFromUrl:(NSString *)urlString;
+- (void)displayImageFromUrl:(NSString *)url;
 
 /**
  Cancel started operation

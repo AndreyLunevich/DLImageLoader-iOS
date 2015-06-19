@@ -38,6 +38,14 @@
 + (instancetype)sharedInstance;
 
 /**
+ Get the image from the cache by the key.
+ At first will try to get image from memory cache
+ If image will not found, will try to get image from disk cache
+ @param key. Key of image in cache.
+ */
+- (UIImage *)imageByKey:(NSString *)key;
+
+/**
  Save the image in the cache for the key.
  @param image. UIImage to save in cache.
  @param key. Key of image in cache.

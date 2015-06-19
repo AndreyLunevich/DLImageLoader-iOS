@@ -21,6 +21,7 @@
 		D808206A1A20F298002E11B2 /* DLILOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = D80820641A20F298002E11B2 /* DLILOperation.m */; };
 		D808206B1A20F298002E11B2 /* DLImageLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = D80820661A20F298002E11B2 /* DLImageLoader.m */; };
 		D808206C1A20F298002E11B2 /* DLImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = D80820681A20F298002E11B2 /* DLImageView.m */; };
+		D83953271B3492C100FB8B25 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D83953261B3492C100FB8B25 /* RootViewController.m */; };
 		D864DB6518EF551B008EBC6C /* iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D864DB6418EF551B008EBC6C /* iPhone.storyboard */; };
 		D864DB6918EF5677008EBC6C /* TableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D864DB6818EF5677008EBC6C /* TableViewCell.m */; };
 		D864DB6C18EF5CB4008EBC6C /* CollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D864DB6B18EF5CB4008EBC6C /* CollectionViewCell.m */; };
@@ -52,6 +53,8 @@
 		D80820661A20F298002E11B2 /* DLImageLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLImageLoader.m; sourceTree = "<group>"; };
 		D80820671A20F298002E11B2 /* DLImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLImageView.h; sourceTree = "<group>"; };
 		D80820681A20F298002E11B2 /* DLImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLImageView.m; sourceTree = "<group>"; };
+		D83953251B3492C100FB8B25 /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
+		D83953261B3492C100FB8B25 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
 		D864DB6418EF551B008EBC6C /* iPhone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = iPhone.storyboard; sourceTree = "<group>"; };
 		D864DB6718EF5677008EBC6C /* TableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableViewCell.h; sourceTree = "<group>"; };
 		D864DB6818EF5677008EBC6C /* TableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableViewCell.m; sourceTree = "<group>"; };
@@ -109,6 +112,8 @@
 				D864DB6618EF5664008EBC6C /* Views */,
 				A020EBFA1790A29E00CDEE09 /* AppDelegate.h */,
 				A020EBFB1790A29E00CDEE09 /* AppDelegate.m */,
+				D83953251B3492C100FB8B25 /* RootViewController.h */,
+				D83953261B3492C100FB8B25 /* RootViewController.m */,
 				A020EC111790A2DA00CDEE09 /* TableViewController.h */,
 				A020EC121790A2DA00CDEE09 /* TableViewController.m */,
 				D864DB6D18EF5DAE008EBC6C /* CollectionViewController.h */,
@@ -250,6 +255,7 @@
 				A020EBFC1790A29E00CDEE09 /* AppDelegate.m in Sources */,
 				A020EC141790A2DA00CDEE09 /* TableViewController.m in Sources */,
 				D80820691A20F298002E11B2 /* DLILCacheManager.m in Sources */,
+				D83953271B3492C100FB8B25 /* RootViewController.m in Sources */,
 				D808206B1A20F298002E11B2 /* DLImageLoader.m in Sources */,
 				D864DB6C18EF5CB4008EBC6C /* CollectionViewCell.m in Sources */,
 				D864DB6F18EF5DAE008EBC6C /* CollectionViewController.m in Sources */,

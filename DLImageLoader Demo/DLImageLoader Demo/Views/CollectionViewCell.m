@@ -7,7 +7,6 @@
 //
 
 #import "CollectionViewCell.h"
-#import "DLImageView.h"
 
 @interface CollectionViewCell()
 
@@ -16,15 +15,6 @@
 @end
 
 @implementation CollectionViewCell
-
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
-    }
-    return self;
-}
 
 - (void)prepareForReuse
 {

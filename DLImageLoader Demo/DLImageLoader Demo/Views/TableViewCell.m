@@ -7,7 +7,6 @@
 //
 
 #import "TableViewCell.h"
-#import "DLImageLoader.h"
 
 @interface TableViewCell()
 
@@ -18,11 +17,6 @@
 @end
 
 @implementation TableViewCell
-
-- (void)awakeFromNib
-{
-    // Initialization code
-}
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {

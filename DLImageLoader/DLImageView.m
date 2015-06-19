@@ -17,11 +17,11 @@
 //  limitations under the License.
 
 #import "DLImageView.h"
-#import "DLILOperation.h"
+#import "DLImageLoader.h"
 
 @interface DLImageView()
 
-@property (nonatomic, strong) DLILOperation *operation;
+@property (nonatomic, copy) NSString *url;
 
 @end
 
@@ -47,31 +47,24 @@
     self.contentMode = UIViewContentModeScaleAspectFit;
 }
 
-- (void)displayImageFromUrl:(NSString *)urlString
+- (void)displayImageFromUrl:(NSString *)url
 {
-    [self loadImageFromUrl:urlString completed:^(NSError *error, UIImage *image) {
+    [self loadImageFromUrl:url completed:^(NSError *error, UIImage *image) {
         self.image = image;
     }];
 }
 
-- (void)loadImageFromUrl:(NSString *)urlString
+- (void)loadImageFromUrl:(NSString *)url
                completed:(void (^)(NSError *, UIImage *))completed
 {
+    self.url = url;
     self.image = nil;
-    if (!self.operation) {
-        self.operation = [[DLILOperation alloc] init];
-    }
-    [self.operation setUrl:urlString];
-    [self.operation startLoadingWithCompletion:^(NSError *error, UIImage *image) {
-        if (completed) {
-            completed(error, image);
-        }
-    } canceled:nil];
+    [[DLImageLoader sharedInstance] loadImageFromUrl:url completed:completed];
 }
 
 - (void)cancelLoading
 {
-    [self.operation cancel];
+    [[DLImageLoader sharedInstance] cancelOperation:self.url];
 }
 
 @end
