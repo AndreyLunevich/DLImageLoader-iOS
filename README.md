@@ -84,13 +84,6 @@ Alternatively you can directly add the `DLImageLoader` folder to your project.
 
 ## License
 
-If you use DLImageLoader code in your application you should inform the author about it ( email: andrey.lunevich[at]gmail[dot]com ) like this:
-
->**Subject**: DLIL usage notification <br />
->**Text**: I use DLImageLoader in <application_name> - http://link_to_app_store. I [allow | don't >allow] to mention my app in section "Applications using DLImageLoader" on GitHub.
-
-Also I'll be grateful if you mention DLIL in application UI with string "Using DLImageLoader (c) 2013-2014, Andrey Lunevich" (e.g. in some "About" section).
-
     Copyright 2013-2014 Andrey Lunevich
 
     Licensed under the Apache License, Version 2.0 (the "License");
