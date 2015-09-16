@@ -7,7 +7,7 @@ DLImageLoader-Swift
 
 [CocoaPods](http://cocoapods.org) is the recommended way to add DLImageLoader to your project.
 
-1. Add a pod entry for DLImageLoader to your Podfile `pod 'DLImageLoader-Swift', '~> 1.0.0'`
+1. Add a pod entry for DLImageLoader to your Podfile `pod 'DLImageLoader-Swift', '~> 1.0.0-swift'`
 2. Install the pod(s) by running `pod install`.
 
 ### Source files
