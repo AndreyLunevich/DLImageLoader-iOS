@@ -46,7 +46,7 @@ Alternatively you can directly add the `DLImageLoader` folder to your project.
                                        }];
 </pre>
 <pre>
-[[DLImageLoader sharedInstance] loadImageFromUrl:@""
+[[DLImageLoader sharedInstance] loadImageFromUrl:@"image_url_here"
                                            completed:^(NSError *error, UIImage *image) {
                                             if (error == nil) {
                                               // if we have no any errors
@@ -62,7 +62,7 @@ Alternatively you can directly add the `DLImageLoader` folder to your project.
 // === With using of DLImageLoader instance === //
 
 <pre>
-[[DLImageLoader sharedInstance] cancelOperation:@"file_url_here"];
+[[DLImageLoader sharedInstance] cancelOperation:@"image_url_here"];
 </pre>
 
 <pre>
