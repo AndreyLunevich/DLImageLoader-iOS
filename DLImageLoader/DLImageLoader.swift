@@ -23,8 +23,8 @@ public class DLImageLoader: NSObject {
     var queue: NSOperationQueue = NSOperationQueue();
     
     /**
-    Instance method
-    @return shared instance.
+     Instance method
+     @return shared instance.
     */
     public static let sharedInstance = DLImageLoader()
     
@@ -44,22 +44,22 @@ public class DLImageLoader: NSObject {
     }
     
     /**
-    Load image from url
-    @param url The url of image.
-    @param completed Completed is a completion block that will call after image loading.
+     Load image from url
+     @param url The url of image.
+     @param completed Completed is a completion block that will call after image loading.
     */
-    func loadImageFromUrl(url: String, completed:((error :NSError!, image: UIImage!) ->()))
+    public func loadImageFromUrl(url: String, completed:((error :NSError!, image: UIImage!) ->()))
     {
         loadImageFromUrl(url, completed: completed, canceled: nil)
     }
     
     /**
-    Load image from url
-    @param url The url of image.
-    @param completed Completed is a completion block that will call after image loading.
-    @param canceled Canceled is a block that will if loading opedation was calceled.
+     Load image from url
+     @param url The url of image.
+     @param completed Completed is a completion block that will call after image loading.
+     @param canceled Canceled is a block that will if loading opedation was calceled.
     */
-    func loadImageFromUrl(url: String, completed:((error :NSError!, image: UIImage!) ->())? = nil, canceled:(() -> ())? = nil)
+    public func loadImageFromUrl(url: String, completed:((error :NSError!, image: UIImage!) ->())? = nil, canceled:(() -> ())? = nil)
     {
         let image = DLILCacheManager.sharedInstance.imageByKey(url)
         if (image != nil) {
@@ -100,11 +100,11 @@ public class DLImageLoader: NSObject {
     }
     
     /**
-    Load image from url
-    @param url The url of image.
-    @param imageView UIImageView in which will display image.
+     Load image from url
+     @param url The url of image.
+     @param imageView UIImageView in which will display image.
     */
-    func displayImageFromUrl(url: String, imageView: UIImageView)
+    public func displayImageFromUrl(url: String, imageView: UIImageView)
     {
         imageView.image = nil;
         loadImageFromUrl(url, completed: { (error, image) -> () in
@@ -115,10 +115,10 @@ public class DLImageLoader: NSObject {
     }
     
     /**
-    Cancel operation
-    @param url. Url of operation to stop
+     Cancel operation
+     @param url. Url of operation to stop
     */
-    func cancelOperation(url: String!)
+    public func cancelOperation(url: String!)
     {
         for operation in self.queue.operations {
             if let dlil = operation as? DLILOperation {
@@ -130,9 +130,9 @@ public class DLImageLoader: NSObject {
     }
     
     /**
-    Stop all active operations
+     Stop all active operations
     */
-    func cancelAllOperations()
+    public func cancelAllOperations()
     {
         for operation in self.queue.operations {
             operation.cancel()
@@ -140,9 +140,9 @@ public class DLImageLoader: NSObject {
     }
     
     /**
-    Clear cache of DLImageLoader
+     Clear cache of DLImageLoader
     */
-    func clearCache()
+    public func clearCache()
     {
         DLILCacheManager.sharedInstance.clear();
     }

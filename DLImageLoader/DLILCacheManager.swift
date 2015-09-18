@@ -39,7 +39,7 @@ class DLILCacheManager: NSObject {
     /**
      DLILCacheManager instance
     **/
-    static let sharedInstance = DLILCacheManager()
+    internal static let sharedInstance = DLILCacheManager()
     
     override init() {
         super.init()
@@ -99,7 +99,7 @@ class DLILCacheManager: NSObject {
      If image will not found, will try to get image from disk cache
      @param key. Key of image in cache.
     */
-    func imageByKey(key: String) -> UIImage?
+    internal func imageByKey(key: String) -> UIImage?
     {
         var image: UIImage? = nil;
         if (self.memoryCacheEnabled) {
@@ -119,7 +119,7 @@ class DLILCacheManager: NSObject {
      @param image. UIImage to save in cache.
      @param key. Key of image in cache.
     */
-    func saveImage(image: UIImage!, forKey: String)
+    internal func saveImage(image: UIImage!, forKey: String)
     {
         if (self.memoryCacheEnabled) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) {
@@ -138,7 +138,7 @@ class DLILCacheManager: NSObject {
     /**
     Clear memory and disk cache
     */
-    func clear()
+    internal func clear()
     {
         self.cache.removeAllObjects()
         let fileManager = NSFileManager.defaultManager()

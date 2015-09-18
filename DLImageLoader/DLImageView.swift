@@ -44,7 +44,7 @@ class DLImageView: UIImageView {
      Display image from url
      @param urlString The url of image.
     */
-    func displayImageFromUrl(url: String)
+    internal func displayImageFromUrl(url: String)
     {
         loadImageFromUrl(url) { (error, image) -> () in
             self.image = image
@@ -56,7 +56,7 @@ class DLImageView: UIImageView {
      @param urlString The url of image.
      @param completed Completed is a completion block that will call after image loading.
     */
-    func loadImageFromUrl(url: String, completed:((error :NSError!, image: UIImage!) ->())? = nil)
+    internal func loadImageFromUrl(url: String, completed:((error :NSError!, image: UIImage!) ->())? = nil)
     {
         self.url = url;
         self.image = nil;
@@ -66,7 +66,7 @@ class DLImageView: UIImageView {
     /**
      Cancel started operation
     */
-    func cancelLoading()
+    internal func cancelLoading()
     {
         DLImageLoader.sharedInstance.cancelOperation(self.url)
     }

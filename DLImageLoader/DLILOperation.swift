@@ -39,7 +39,7 @@ class DLILOperation: NSOperation, NSURLConnectionDelegate {
         }
     }
     
-    func startLoadingWithUrl(url: String, completed: CompletionBlock!, canceled: CancelBlock!)
+    internal func startLoadingWithUrl(url: String, completed: CompletionBlock!, canceled: CancelBlock!)
     {
         self.url = url;
         if (self.url.characters.count == 0) {
