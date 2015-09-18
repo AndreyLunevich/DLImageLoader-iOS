@@ -18,7 +18,7 @@
 
 import UIKit
 
-class DLImageLoader: NSObject {
+public class DLImageLoader: NSObject {
     
     var queue: NSOperationQueue = NSOperationQueue();
     
@@ -26,7 +26,7 @@ class DLImageLoader: NSObject {
     Instance method
     @return shared instance.
     */
-    static let sharedInstance = DLImageLoader()
+    public static let sharedInstance = DLImageLoader()
     
     private func updateImageView(imageView: UIImageView, image: UIImage?)
     {
