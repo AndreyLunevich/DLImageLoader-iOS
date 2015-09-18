@@ -14,8 +14,9 @@
 		D80956621BA8B5D600DED40C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D80956601BA8B5D600DED40C /* LaunchScreen.storyboard */; };
 		D809568D1BA8D86800DED40C /* DLILCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80956861BA8D86800DED40C /* DLILCacheManager.swift */; };
 		D809568E1BA8D86800DED40C /* DLILOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80956871BA8D86800DED40C /* DLILOperation.swift */; };
-		D80956901BA8D86800DED40C /* DLImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D809568A1BA8D86800DED40C /* DLImageLoader.swift */; };
 		D80956911BA8D86800DED40C /* DLImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D809568B1BA8D86800DED40C /* DLImageView.swift */; };
+		D8C7B3701BAC748300C7984C /* DLILManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C7B36F1BAC748300C7984C /* DLILManager.swift */; settings = {ASSET_TAGS = (); }; };
+		D8C7B3721BAC74B500C7984C /* DLImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C7B3711BAC74B500C7984C /* DLImageLoader.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,8 +29,9 @@
 		D80956631BA8B5D600DED40C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D80956861BA8D86800DED40C /* DLILCacheManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DLILCacheManager.swift; sourceTree = "<group>"; };
 		D80956871BA8D86800DED40C /* DLILOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DLILOperation.swift; sourceTree = "<group>"; };
-		D809568A1BA8D86800DED40C /* DLImageLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DLImageLoader.swift; sourceTree = "<group>"; };
 		D809568B1BA8D86800DED40C /* DLImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DLImageView.swift; sourceTree = "<group>"; };
+		D8C7B36F1BAC748300C7984C /* DLILManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DLILManager.swift; sourceTree = "<group>"; };
+		D8C7B3711BAC74B500C7984C /* DLImageLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DLImageLoader.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,8 +80,9 @@
 			children = (
 				D80956861BA8D86800DED40C /* DLILCacheManager.swift */,
 				D80956871BA8D86800DED40C /* DLILOperation.swift */,
-				D809568A1BA8D86800DED40C /* DLImageLoader.swift */,
 				D809568B1BA8D86800DED40C /* DLImageView.swift */,
+				D8C7B36F1BAC748300C7984C /* DLILManager.swift */,
+				D8C7B3711BAC74B500C7984C /* DLImageLoader.swift */,
 			);
 			name = DLImageLoader;
 			path = ../../DLImageLoader;
@@ -157,7 +160,8 @@
 			files = (
 				D809565A1BA8B5D600DED40C /* ViewController.swift in Sources */,
 				D80956911BA8D86800DED40C /* DLImageView.swift in Sources */,
-				D80956901BA8D86800DED40C /* DLImageLoader.swift in Sources */,
+				D8C7B3721BAC74B500C7984C /* DLImageLoader.swift in Sources */,
+				D8C7B3701BAC748300C7984C /* DLILManager.swift in Sources */,
 				D809568D1BA8D86800DED40C /* DLILCacheManager.swift in Sources */,
 				D80956581BA8B5D600DED40C /* AppDelegate.swift in Sources */,
 				D809568E1BA8D86800DED40C /* DLILOperation.swift in Sources */,
