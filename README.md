@@ -14,7 +14,7 @@ This project aims to provide a reusable instrument for asynchronous image loadin
 
 ## Plans
 
-Objective-C version will be fully moved to objc branch
+Objective-C version will be fully moved to [objc](https://github.com/AndreyLunevich/DLImageLoader-iOS/tree/objc) branch
 
 ## Applications using DLImageLoader
 
