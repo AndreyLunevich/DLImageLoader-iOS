@@ -53,7 +53,7 @@
 
 /**
  Load image from request
- @param url The url of image.
+ @param request The request of image.
  @param completed Completed is a completion block that will call after image loading.
  */
 - (void)loadImageFromRequest:(NSURLRequest *)request
@@ -61,7 +61,7 @@
 
 /**
  Load image from request
- @param url The url of image.
+ @param request The request of image.
  @param completed Completed is a completion block that will call after image loading.
  @param canceled Canceled is a block that will if loading opedation was calceled.
  */
@@ -71,7 +71,7 @@
 
 /**
  Load image from request
- @param url The url of image.
+ @param request The request of image.
  @param imageView UIImageView in which will display image.
  */
 - (void)displayImageFromRequest:(NSURLRequest *)request imageView:(UIImageView *)imageView;

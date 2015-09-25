@@ -36,7 +36,7 @@
 
 /**
  Load image from request
- @param urlString The url of image.
+ @param request The request of image.
  @param completed Completed is a completion block that will call after image loading.
  */
 - (void)loadImageFromRequest:(NSURLRequest *)request
@@ -44,7 +44,7 @@
 
 /**
  Display image from request
- @param urlString The url of image.
+ @param request The request of image.
  */
 - (void)displayImageFromRequest:(NSURLRequest *)request;
 
