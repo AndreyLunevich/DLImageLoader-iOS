@@ -23,9 +23,9 @@ typedef void (^CancelBlock)();
 
 @interface DLILOperation : NSOperation <NSURLConnectionDelegate>
 
-@property (nonatomic, copy) NSString *url;
+- (id)initWithRequest:(NSURLRequest *)request;
 
-- (id)initWithUrl:(NSString *)url;
+- (NSString *)url;
 
 - (void)startLoadingWithCompletion:(CompletionBlock)completed
                           canceled:(CancelBlock)canceled;

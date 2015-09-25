@@ -54,6 +54,13 @@ fprintf(stderr, "%s %s\n", __FUNCTION__, [__log_str__ UTF8String]);\
 
 #pragma mark - loading methods
 
+- (void)displayImageFromUrl:(NSString *)url
+                  imageView:(UIImageView *)imageView
+{
+    [self displayImageFromRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]
+                        imageView:imageView];
+}
+
 - (void)loadImageFromUrl:(NSString *)url
                completed:(void (^)(NSError *, UIImage *))completed
 {
@@ -64,6 +71,33 @@ fprintf(stderr, "%s %s\n", __FUNCTION__, [__log_str__ UTF8String]);\
                completed:(void (^)(NSError *, UIImage *))completed
                 canceled:(void (^)())canceled
 {
+    [self loadImageFromRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]
+                     completed:completed
+                      canceled:canceled];
+}
+
+- (void)displayImageFromRequest:(NSURLRequest *)request
+                      imageView:(UIImageView *)imageView
+{
+    imageView.image = nil;
+    [self loadImageFromRequest:request completed:^(NSError *error, UIImage *image) {
+        [self updateImageView:imageView image:image];
+    } canceled:^{
+        [self updateImageView:imageView image:nil];
+    }];
+}
+
+- (void)loadImageFromRequest:(NSURLRequest *)request
+                   completed:(void (^)(NSError *, UIImage *))completed
+{
+    [self loadImageFromRequest:request completed:completed canceled:nil];
+}
+
+- (void)loadImageFromRequest:(NSURLRequest *)request
+                   completed:(void (^)(NSError *, UIImage *))completed
+                    canceled:(void (^)())canceled
+{
+    NSString *url = request.URL.absoluteString;
     UIImage *image = [[DLILCacheManager sharedInstance] imageByKey:url];
     if (image) {
         DLog(@"=======");
@@ -76,7 +110,7 @@ fprintf(stderr, "%s %s\n", __FUNCTION__, [__log_str__ UTF8String]);\
         }
     } else {
         DLog(@"DLImageLoader: start image loading from url => %@", url);
-        DLILOperation *operation = [[DLILOperation alloc] initWithUrl:url];
+        DLILOperation *operation = [[DLILOperation alloc] initWithRequest:request];
         [operation startLoadingWithCompletion:^(NSError *error, UIImage *image) {
             DLog(@"=======");
             DLog(@"DLImageLoader: loading completed");
@@ -97,17 +131,6 @@ fprintf(stderr, "%s %s\n", __FUNCTION__, [__log_str__ UTF8String]);\
         }];
         [self.queue addOperation:operation];
     }
-}
-
-- (void)displayImageFromUrl:(NSString *)url
-                  imageView:(UIImageView *)imageView
-{
-    imageView.image = nil;
-    [self loadImageFromUrl:url completed:^(NSError *error, UIImage *image) {
-        [self updateImageView:imageView image:image];
-    } canceled:^{
-        [self updateImageView:imageView image:nil];
-    }];
 }
 
 - (void)updateImageView:(UIImageView *)imageView image:(UIImage *)image

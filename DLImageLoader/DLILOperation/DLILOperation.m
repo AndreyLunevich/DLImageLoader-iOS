@@ -23,6 +23,7 @@
 
 @property (nonatomic, copy) CompletionBlock completed;
 @property (nonatomic, copy) CancelBlock canceled;
+@property (nonatomic, copy) NSURLRequest *request;
 @property (nonatomic, strong) NSMutableData *data;
 @property (nonatomic, strong) NSURLConnection *connection;
 
@@ -30,28 +31,19 @@
 
 @implementation DLILOperation
 
-- (id)initWithUrl:(NSString *)url
+- (id)initWithRequest:(NSURLRequest *)request
 {
     self = [super init];
     if (self) {
-        [self configWithUrl:url];
+        self.data = [[NSMutableData alloc] init];
+        self.request = request;
     }
     return self;
 }
 
-- (id)init
+- (NSString *)url
 {
-    self = [super init];
-    if (self) {
-        [self configWithUrl:nil];
-    }
-    return self;
-}
-
-- (void)configWithUrl:(NSString *)url
-{
-    self.url = url;
-    self.data = [[NSMutableData alloc] init];
+    return self.request.URL.absoluteString;
 }
 
 - (void)start
@@ -61,9 +53,7 @@
         return;
     }
     
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:_url]];
-    _connection = [[NSURLConnection alloc] initWithRequest:request
-                                                  delegate:self];
+    _connection = [[NSURLConnection alloc] initWithRequest:self.request delegate:self];
     if (_connection == nil) {
         [self cancel];
     }

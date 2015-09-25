@@ -49,17 +49,29 @@
 
 - (void)displayImageFromUrl:(NSString *)url
 {
-    [self loadImageFromUrl:url completed:^(NSError *error, UIImage *image) {
-        self.image = image;
-    }];
+    [self displayImageFromRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]];
 }
 
 - (void)loadImageFromUrl:(NSString *)url
                completed:(void (^)(NSError *, UIImage *))completed
 {
-    self.url = url;
+    [self loadImageFromRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]
+                     completed:completed];
+}
+
+- (void)displayImageFromRequest:(NSURLRequest *)request
+{
+    [self loadImageFromRequest:request completed:^(NSError *error, UIImage *image) {
+        self.image = image;
+    }];
+}
+
+- (void)loadImageFromRequest:(NSURLRequest *)request
+                   completed:(void (^)(NSError *, UIImage *))completed
+{
+    self.url = request.URL.absoluteString;
     self.image = nil;
-    [[DLImageLoader sharedInstance] loadImageFromUrl:url completed:completed];
+    [[DLImageLoader sharedInstance] loadImageFromRequest:request completed:completed];
 }
 
 - (void)cancelLoading
