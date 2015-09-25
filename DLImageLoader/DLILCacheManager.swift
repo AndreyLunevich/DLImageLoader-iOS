@@ -44,8 +44,11 @@ class DLILCacheManager: NSObject {
     override init() {
         super.init()
         do {
+            var isDir : ObjCBool = false
             let fileManager = NSFileManager.defaultManager()
-            try fileManager.createDirectoryAtPath(self.directory(), withIntermediateDirectories: false, attributes: nil)
+            if !fileManager.fileExistsAtPath(self.directory(), isDirectory: &isDir) {
+                try fileManager.createDirectoryAtPath(self.directory(), withIntermediateDirectories: false, attributes: nil)
+            }
         } catch let error as NSError {
             print(error.description)
         }
