@@ -46,6 +46,17 @@ public class DLImageLoader: NSObject {
     /**
      Load image from url
      @param url The url of image.
+     @param imageView UIImageView in which will display image.
+    */
+    public func displayImageFromUrl(url: String, imageView: UIImageView)
+    {
+        let request = NSURLRequest(URL: NSURL(string: url)!)
+        displayImageFromRequest(request, imageView: imageView)
+    }
+    
+    /**
+     Load image from url
+     @param url The url of image.
      @param completed Completed is a completion block that will call after image loading.
     */
     public func loadImageFromUrl(url: String, completed:((error :NSError!, image: UIImage!) ->()))
@@ -61,6 +72,44 @@ public class DLImageLoader: NSObject {
     */
     public func loadImageFromUrl(url: String, completed:((error :NSError!, image: UIImage!) ->())? = nil, canceled:(() -> ())? = nil)
     {
+        let request = NSURLRequest(URL: NSURL(string: url)!)
+        loadImageFromRequest(request, completed: completed, canceled: canceled)
+    }
+    
+    /**
+    Load image from request
+    @param request The request of image.
+    @param imageView UIImageView in which will display image.
+    */
+    public func displayImageFromRequest(request: NSURLRequest, imageView: UIImageView)
+    {
+        imageView.image = nil;
+        loadImageFromRequest(request, completed: { (error, image) -> () in
+            self.updateImageView(imageView, image: image)
+            }) { () -> () in
+                self.updateImageView(imageView, image: nil)
+        }
+    }
+    
+    /**
+     Load image from request
+     @param request The request of image.
+     @param completed Completed is a completion block that will call after image loading.
+    */
+    public func loadImageFromRequest(request: NSURLRequest, completed:((error :NSError!, image: UIImage!) ->()))
+    {
+        loadImageFromRequest(request, completed: completed, canceled: nil)
+    }
+    
+    /**
+     Load image from request
+     @param request The request of image.
+     @param completed Completed is a completion block that will call after image loading.
+     @param canceled Canceled is a block that will if loading opedation was calceled.
+    */
+    public func loadImageFromRequest(request: NSURLRequest, completed:((error :NSError!, image: UIImage!) ->())? = nil, canceled:(() -> ())? = nil)
+    {
+        let url = (request.URL?.absoluteString)!;
         let image = DLILCacheManager.sharedInstance.imageByKey(url)
         if (image != nil) {
             
@@ -76,7 +125,7 @@ public class DLImageLoader: NSObject {
             dlog("DLImageLoader: start image loading from url => %@", function: url);
             
             let operation:DLILOperation = DLILOperation()
-            operation.startLoadingWithUrl(url, completed: { (error, image) -> () in
+            operation.startLoading(request, completed: { (error, image) -> () in
                 
                 self.dlog("=======")
                 self.dlog("DLImageLoader: loading completed")
@@ -100,21 +149,6 @@ public class DLImageLoader: NSObject {
     }
     
     /**
-     Load image from url
-     @param url The url of image.
-     @param imageView UIImageView in which will display image.
-    */
-    public func displayImageFromUrl(url: String, imageView: UIImageView)
-    {
-        imageView.image = nil;
-        loadImageFromUrl(url, completed: { (error, image) -> () in
-            self.updateImageView(imageView, image: image)
-            }) { () -> () in
-                self.updateImageView(imageView, image: nil)
-        }
-    }
-    
-    /**
      Cancel operation
      @param url. Url of operation to stop
     */
@@ -122,7 +156,7 @@ public class DLImageLoader: NSObject {
     {
         for operation in self.queue.operations {
             if let dlil = operation as? DLILOperation {
-                if (dlil.url == url) {
+                if (dlil.url() == url) {
                     dlil.cancel()
                 }
             }

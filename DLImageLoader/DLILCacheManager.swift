@@ -136,7 +136,7 @@ class DLILCacheManager: NSObject {
     }
     
     /**
-    Clear memory and disk cache
+     Clear memory and disk cache
     */
     internal func clear()
     {

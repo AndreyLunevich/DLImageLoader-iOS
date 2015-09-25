@@ -32,6 +32,7 @@ class DLImageView: UIImageView {
     }
     
     override func awakeFromNib() {
+        super.awakeFromNib();
         configureView()
     }
     
@@ -46,9 +47,7 @@ class DLImageView: UIImageView {
     */
     internal func displayImageFromUrl(url: String)
     {
-        loadImageFromUrl(url) { (error, image) -> () in
-            self.image = image
-        }
+        displayImageFromRequest(NSURLRequest(URL: NSURL(string: url)!))
     }
     
     /**
@@ -58,9 +57,30 @@ class DLImageView: UIImageView {
     */
     internal func loadImageFromUrl(url: String, completed:((error :NSError!, image: UIImage!) ->())? = nil)
     {
-        self.url = url;
+        loadImageFromRequest(NSURLRequest(URL: NSURL(string: url)!), completed: completed)
+    }
+    
+    /**
+    Display image from request
+    @param request The request of image.
+    */
+    internal func displayImageFromRequest(request: NSURLRequest)
+    {
+        loadImageFromRequest(request) { (error, image) -> () in
+            self.image = image
+        }
+    }
+    
+    /**
+     Load image from request
+     @param request The request of image.
+     @param completed Completed is a completion block that will call after image loading.
+    */
+    internal func loadImageFromRequest(request: NSURLRequest, completed:((error :NSError!, image: UIImage!) ->())? = nil)
+    {
+        self.url = request.URL?.absoluteString;
         self.image = nil;
-        DLImageLoader.sharedInstance.loadImageFromUrl(url, completed: completed)
+        DLImageLoader.sharedInstance.loadImageFromRequest(request, completed: completed)
     }
     
     /**

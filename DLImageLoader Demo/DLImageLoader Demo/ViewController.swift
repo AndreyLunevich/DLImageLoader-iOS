@@ -15,7 +15,8 @@ class ViewController: UIViewController {
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        self.imageView.displayImageFromUrl("http://lialka.net/Content/images/1.jpg")
+        let request = NSURLRequest(URL: NSURL(fileURLWithPath: "http://lialka.net/Content/images/1.jpg"))
+        self.imageView.displayImageFromRequest(request)
     }
 
     override func didReceiveMemoryWarning()

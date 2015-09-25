@@ -27,7 +27,7 @@ class DLILOperation: NSOperation, NSURLConnectionDelegate {
     var canceled: CancelBlock! = nil;
     var data: NSMutableData = NSMutableData();
     var connection: NSURLConnection! = nil;
-    internal var url: String = ""
+    var request: NSURLRequest! = nil;
     
     override func cancel()
     {
@@ -39,10 +39,14 @@ class DLILOperation: NSOperation, NSURLConnectionDelegate {
         }
     }
     
-    internal func startLoadingWithUrl(url: String, completed: CompletionBlock!, canceled: CancelBlock!)
+    internal func url() -> String {
+        return (self.request.URL?.absoluteString)!;
+    }
+    
+    internal func startLoading(request: NSURLRequest, completed: CompletionBlock!, canceled: CancelBlock!)
     {
-        self.url = url;
-        if (self.url.characters.count == 0) {
+        self.request = request;
+        if (url().characters.count == 0) {
             // fail loading
             if (completed != nil) {
                 completed(error: nil, image: nil);
@@ -53,7 +57,6 @@ class DLILOperation: NSOperation, NSURLConnectionDelegate {
         self.completed = completed;
         self.canceled = canceled;
         
-        let request = NSURLRequest(URL: NSURL(string: self.url)!)
         self.connection = NSURLConnection(request: request, delegate: self)
         if (self.connection == nil) {
             cancel();
