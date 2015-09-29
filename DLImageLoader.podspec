@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "DLImageLoader"
-  s.version      = "1.0.0-swift"
+  s.version      = "1.0.1-swift"
   s.summary      = "DLImageLoader is a reusable instrument for asynchronous image loading and caching."
   s.description  = <<-DESC
                     DLImageLoader for iOS. 
