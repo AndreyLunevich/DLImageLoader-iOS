@@ -47,31 +47,30 @@
     self.contentMode = UIViewContentModeScaleAspectFit;
 }
 
-- (void)displayImageFromUrl:(NSString *)url
+- (void)imageFromUrl:(NSString *)url
 {
-    [self displayImageFromRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]];
+    [self imageFromRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]];
 }
 
-- (void)loadImageFromUrl:(NSString *)url
-               completed:(void (^)(NSError *, UIImage *))completed
+- (void)imageFromUrl:(NSString *)url
+           completed:(void (^)(NSError *, UIImage *))completed
 {
-    [self loadImageFromRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]
-                     completed:completed];
+    [self imageFromRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]
+                 completed:completed];
 }
 
-- (void)displayImageFromRequest:(NSURLRequest *)request
+- (void)imageFromRequest:(NSURLRequest *)request
 {
-    [self loadImageFromRequest:request completed:^(NSError *error, UIImage *image) {
+    [self imageFromRequest:request completed:^(NSError *error, UIImage *image) {
         self.image = image;
     }];
 }
 
-- (void)loadImageFromRequest:(NSURLRequest *)request
-                   completed:(void (^)(NSError *, UIImage *))completed
+- (void)imageFromRequest:(NSURLRequest *)request
+               completed:(void (^)(NSError *, UIImage *))completed
 {
     self.url = request.URL.absoluteString;
-    self.image = nil;
-    [[DLImageLoader sharedInstance] loadImageFromRequest:request completed:completed];
+    [[DLImageLoader sharedInstance] imageFromRequest:request imageView:self];
 }
 
 - (void)cancelLoading

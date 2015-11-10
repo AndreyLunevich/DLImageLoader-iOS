@@ -20,19 +20,6 @@
 #import "DLILCacheManager.h"
 #import "DLILOperation.h"
 
-
-#if DEBUG
-#	define DLog(fmt, ...) \
-{\
-NSMutableString *__log_str__ = [[NSMutableString alloc]\
-initWithFormat:fmt, ##__VA_ARGS__];\
-fprintf(stderr, "%s %s\n", __FUNCTION__, [__log_str__ UTF8String]);\
-}
-#else
-#    define DLog(...)
-#endif
-
-
 @interface DLImageLoader()
 
 @property (nonatomic, strong) NSOperationQueue *queue;
@@ -54,77 +41,70 @@ fprintf(stderr, "%s %s\n", __FUNCTION__, [__log_str__ UTF8String]);\
 
 #pragma mark - loading methods
 
-- (void)displayImageFromUrl:(NSString *)url
-                  imageView:(UIImageView *)imageView
+- (void)imageFromUrl:(NSString *)url imageView:(UIImageView *)imageView
 {
-    [self displayImageFromRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]
-                        imageView:imageView];
+    [self imageFromRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]
+                 imageView:imageView];
 }
 
-- (void)loadImageFromUrl:(NSString *)url
-               completed:(void (^)(NSError *, UIImage *))completed
+- (void)imageFromUrl:(NSString *)url
+           completed:(void (^)(NSError *, UIImage *))completed
 {
-    [self loadImageFromUrl:url completed:completed canceled:nil];
+    [self imageFromUrl:url completed:completed canceled:nil];
 }
 
-- (void)loadImageFromUrl:(NSString *)url
-               completed:(void (^)(NSError *, UIImage *))completed
-                canceled:(void (^)())canceled
+- (void)imageFromUrl:(NSString *)url
+           completed:(void (^)(NSError *, UIImage *))completed
+            canceled:(void (^)())canceled
 {
-    [self loadImageFromRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]
-                     completed:completed
-                      canceled:canceled];
+    [self imageFromRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]
+                 completed:completed
+                  canceled:canceled];
 }
 
-- (void)displayImageFromRequest:(NSURLRequest *)request
-                      imageView:(UIImageView *)imageView
+- (void)imageFromRequest:(NSURLRequest *)request imageView:(UIImageView *)imageView
 {
     imageView.image = nil;
-    [self loadImageFromRequest:request completed:^(NSError *error, UIImage *image) {
+    [self imageFromRequest:request completed:^(NSError *error, UIImage *image) {
         [self updateImageView:imageView image:image];
     } canceled:^{
         [self updateImageView:imageView image:nil];
     }];
 }
 
-- (void)loadImageFromRequest:(NSURLRequest *)request
-                   completed:(void (^)(NSError *, UIImage *))completed
+- (void)imageFromRequest:(NSURLRequest *)request
+               completed:(void (^)(NSError *, UIImage *))completed
 {
-    [self loadImageFromRequest:request completed:completed canceled:nil];
+    [self imageFromRequest:request completed:completed canceled:nil];
 }
 
-- (void)loadImageFromRequest:(NSURLRequest *)request
-                   completed:(void (^)(NSError *, UIImage *))completed
-                    canceled:(void (^)())canceled
+- (void)imageFromRequest:(NSURLRequest *)request
+               completed:(void (^)(NSError *, UIImage *))completed
+                canceled:(void (^)())canceled
 {
     NSString *url = request.URL.absoluteString;
     UIImage *image = [[DLILCacheManager sharedInstance] imageByKey:url];
+    [self printLog:[NSString stringWithFormat:@"DLImageLoader: image with url => %@", url]];
     if (image) {
-        DLog(@"=======");
-        DLog(@"DLImageLoader: got an image from the cache");
-        DLog(@"DLImageLoader: url of the image => %@", url);
-        DLog(@"DLImageLoader: the resulting image => %@", image);
-        DLog(@"=======");
+        [self printLog:@"DLImageLoader: got an image from the cache"];
         if (completed) {
             completed(nil, image);
         }
     } else {
-        DLog(@"DLImageLoader: start image loading from url => %@", url);
         DLILOperation *operation = [[DLILOperation alloc] initWithRequest:request];
         [operation startLoadingWithCompletion:^(NSError *error, UIImage *image) {
-            DLog(@"=======");
-            DLog(@"DLImageLoader: loading completed");
-            DLog(@"DLImageLoader: url of loaded image => %@", url);
-            DLog(@"DLImageLoader: loaded image => %@", image);
-            DLog(@"DLImageLoader: error of image loading => %@", error);
-            DLog(@"=======");
+            if (error) {
+                [self printLog:[NSString stringWithFormat:@"DLImageLoader: error of image loading => %@", error]];
+            } else {
+                [self printLog:[NSString stringWithFormat:@"DLImageLoader: loaded image with url => %@", url]];
+            }
             // save loaded image to cache
             [[DLILCacheManager sharedInstance] saveImage:image byKey:url];
             if (completed) {
                 completed(error, image);
             }
         } canceled:^{
-            DLog(@"DLImageLoader: image loading is canceled");
+            [self printLog:@"DLImageLoader: image loading is canceled"];
             if (canceled) {
                 canceled();
             }
@@ -159,9 +139,19 @@ fprintf(stderr, "%s %s\n", __FUNCTION__, [__log_str__ UTF8String]);\
 
 #pragma mark - clear cache methods
 
-- (void)clearCache
+- (void)clearCache:(void (^)(BOOL))completed
 {
-    [[DLILCacheManager sharedInstance] clear];
+    [[DLILCacheManager sharedInstance] clear:completed];
+}
+
+#pragma mark - log
+
+- (void)printLog:(NSString *)message
+{
+    if ([self.delegate conformsToProtocol:@protocol(DLImageLoaderDelegate)] &&
+        [self.delegate respondsToSelector:@selector(log:)]) {
+        [self.delegate DLILLog:message];
+    }
 }
 
 @end

@@ -34,8 +34,7 @@
 {
     self.url = url;
     [self.title setText:[NSString stringWithFormat:@"Item = %ld", (long)index]];
-    [[DLImageLoader sharedInstance] displayImageFromUrl:url
-                                              imageView:self.thumbnailView];
+    [[DLImageLoader sharedInstance] imageFromUrl:url imageView:self.thumbnailView];
 }
 
 @end

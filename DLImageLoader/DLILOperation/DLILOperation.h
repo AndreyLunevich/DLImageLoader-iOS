@@ -23,7 +23,7 @@ typedef void (^CancelBlock)();
 
 @interface DLILOperation : NSOperation <NSURLConnectionDelegate>
 
-- (id)initWithRequest:(NSURLRequest *)request;
+- (instancetype)initWithRequest:(NSURLRequest *)request;
 
 - (NSString *)url;
 

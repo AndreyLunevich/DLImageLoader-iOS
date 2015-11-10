@@ -24,13 +24,13 @@
  Memory cache
  @param memoryCacheEnabled by default is YES
  **/
-@property (nonatomic, readonly) BOOL memoryCacheEnabled;
+@property (nonatomic) BOOL memoryCacheEnabled;
 
 /**
  Disk cache
  @param diskCacheEnabled by default is YES
  **/
-@property (nonatomic, readonly) BOOL diskCacheEnabled;
+@property (nonatomic) BOOL diskCacheEnabled;
 
 /**
  DLILCacheManager instance
@@ -55,6 +55,6 @@
 /**
  Clear memory and disk cache
  */
-- (void)clear;
+- (void)clear:(void(^)(BOOL success))completed;
 
 @end

@@ -208,7 +208,7 @@
 		A020EBE01790A29E00CDEE09 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0460;
+				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = "Andrey Lunevich";
 			};
 			buildConfigurationList = A020EBE31790A29E00CDEE09 /* Build configuration list for PBXProject "DLImageLoader Demo" */;
@@ -290,6 +290,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -341,6 +342,7 @@
 				GCC_PREFIX_HEADER = "DLImageLoader Demo/DLImageLoader Demo-Prefix.pch";
 				INFOPLIST_FILE = "DLImageLoader Demo/DLImageLoader Demo-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lunevich.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
@@ -354,6 +356,7 @@
 				GCC_PREFIX_HEADER = "DLImageLoader Demo/DLImageLoader Demo-Prefix.pch";
 				INFOPLIST_FILE = "DLImageLoader Demo/DLImageLoader Demo-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lunevich.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;

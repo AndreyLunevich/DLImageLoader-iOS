@@ -18,7 +18,16 @@
 
 #import <Foundation/Foundation.h>
 
+@protocol DLImageLoaderDelegate <NSObject>
+
+@optional
+- (void)DLILLog:(NSString *)message;
+
+@end
+
 @interface DLImageLoader : NSObject
+
+@property (nonatomic, weak) id<DLImageLoaderDelegate> delegate;
 
 /**
  Instance method
@@ -31,8 +40,8 @@
  @param url The url of image.
  @param completed Completed is a completion block that will call after image loading.
  */
-- (void)loadImageFromUrl:(NSString *)url
-               completed:(void(^)(NSError *error, UIImage *image))completed;
+- (void)imageFromUrl:(NSString *)url
+           completed:(void(^)(NSError *error, UIImage *image))completed;
 
 /**
  Load image from url
@@ -40,41 +49,41 @@
  @param completed Completed is a completion block that will call after image loading.
  @param canceled Canceled is a block that will if loading opedation was calceled.
  */
-- (void)loadImageFromUrl:(NSString *)url
+- (void)imageFromUrl:(NSString *)url
+           completed:(void(^)(NSError *error, UIImage *image))completed
+            canceled:(void(^)())canceled;
+
+/**
+ Load image from url
+ @param url The url of image.
+ @param imageView UIImageView in which will display image.
+ */
+- (void)imageFromUrl:(NSString *)url imageView:(UIImageView *)imageView;
+
+/**
+ Load image from request
+ @param request The request of image.
+ @param completed Completed is a completion block that will call after image loading.
+ */
+- (void)imageFromRequest:(NSURLRequest *)request
+               completed:(void(^)(NSError *error, UIImage *image))completed;
+
+/**
+ Load image from request
+ @param request The request of image.
+ @param completed Completed is a completion block that will call after image loading.
+ @param canceled Canceled is a block that will if loading opedation was calceled.
+ */
+- (void)imageFromRequest:(NSURLRequest *)request
                completed:(void(^)(NSError *error, UIImage *image))completed
                 canceled:(void(^)())canceled;
 
 /**
- Load image from url
- @param url The url of image.
- @param imageView UIImageView in which will display image.
- */
-- (void)displayImageFromUrl:(NSString *)url imageView:(UIImageView *)imageView;
-
-/**
- Load image from request
- @param request The request of image.
- @param completed Completed is a completion block that will call after image loading.
- */
-- (void)loadImageFromRequest:(NSURLRequest *)request
-                   completed:(void(^)(NSError *error, UIImage *image))completed;
-
-/**
- Load image from request
- @param request The request of image.
- @param completed Completed is a completion block that will call after image loading.
- @param canceled Canceled is a block that will if loading opedation was calceled.
- */
-- (void)loadImageFromRequest:(NSURLRequest *)request
-                   completed:(void(^)(NSError *error, UIImage *image))completed
-                    canceled:(void(^)())canceled;
-
-/**
  Load image from request
  @param request The request of image.
  @param imageView UIImageView in which will display image.
  */
-- (void)displayImageFromRequest:(NSURLRequest *)request imageView:(UIImageView *)imageView;
+- (void)imageFromRequest:(NSURLRequest *)request imageView:(UIImageView *)imageView;
 
 /**
  Cancel operation
@@ -90,6 +99,6 @@
 /**
  Clear cache of DLImageLoader
  */
-- (void)clearCache;
+- (void)clearCache:(void(^)(BOOL success))completed;
 
 @end

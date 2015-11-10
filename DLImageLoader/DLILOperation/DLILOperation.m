@@ -31,7 +31,7 @@
 
 @implementation DLILOperation
 
-- (id)initWithRequest:(NSURLRequest *)request
+- (instancetype)initWithRequest:(NSURLRequest *)request
 {
     self = [super init];
     if (self) {
@@ -53,8 +53,8 @@
         return;
     }
     
-    _connection = [[NSURLConnection alloc] initWithRequest:self.request delegate:self];
-    if (_connection == nil) {
+    self.connection = [[NSURLConnection alloc] initWithRequest:self.request delegate:self];
+    if (self.connection == nil) {
         [self cancel];
     }
 }
@@ -76,8 +76,8 @@
 
 - (void)cancel
 {
-    [_connection cancel];
-    _connection = nil;
+    [self.connection cancel];
+    self.connection = nil;
     [self.data setData:[NSData dataWithBytes:NULL length:0]];
     if (self.canceled) {
         self.canceled();

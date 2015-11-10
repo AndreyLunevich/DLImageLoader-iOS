@@ -20,9 +20,9 @@
 
 static NSString *kCacheFolderName = @"DLILCacheFolder";
 
-@interface DLILCacheManager() {
-    NSCache *cache;
-}
+@interface DLILCacheManager()
+
+@property (nonatomic, strong) NSCache *cache;
 
 @end
 
@@ -34,10 +34,9 @@ static NSString *kCacheFolderName = @"DLILCacheFolder";
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         instance = [[self alloc] init];
-        instance->cache = [[NSCache alloc] init];
-        instance->_memoryCacheEnabled = YES;
-        instance->_diskCacheEnabled = YES;
-        [[NSFileManager defaultManager] createDirectoryAtPath:[instance directory]
+        instance.memoryCacheEnabled = YES;
+        instance.diskCacheEnabled = YES;
+        [[NSFileManager defaultManager] createDirectoryAtPath:[instance cacheDirectoryPath]
                                   withIntermediateDirectories:NO
                                                    attributes:nil
                                                         error:nil];
@@ -46,14 +45,23 @@ static NSString *kCacheFolderName = @"DLILCacheFolder";
     return instance;
 }
 
+- (void)setMemoryCacheEnabled:(BOOL)memoryCacheEnabled
+{
+    _memoryCacheEnabled = memoryCacheEnabled;
+    
+    if (memoryCacheEnabled) {
+        self.cache = [[NSCache alloc] init];
+    }
+}
+
 - (UIImage *)imageByKey:(NSString *)key
 {
     UIImage *image = nil;
-    if (_memoryCacheEnabled) {
-        image = [cache objectForKey:key];
+    if (self.memoryCacheEnabled) {
+        image = [self.cache objectForKey:key];
     }
     if (!image) {
-        if (_diskCacheEnabled) {
+        if (self.diskCacheEnabled) {
             image = [self imageFromDisk:key];
         }
     }
@@ -62,22 +70,22 @@ static NSString *kCacheFolderName = @"DLILCacheFolder";
 
 - (void)saveImage:(UIImage *)image byKey:(NSString *)key
 {
-    if (_memoryCacheEnabled) {
+    if (self.memoryCacheEnabled) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
             if (image) {
-                [cache setObject:image forKey:key];
+                [self.cache setObject:image forKey:key];
             }
         });
     }
-    if (_diskCacheEnabled) {
-        __block typeof(self) weakSelf = self;
+    if (self.diskCacheEnabled) {
+        __weak typeof(self) weakSelf = self;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-            [weakSelf saveToSandBoxImage:image withKey:key];
+            [weakSelf saveImageToDisk:image withKey:key];
         });
     }
 }
 
-- (void)saveToSandBoxImage:(UIImage *)image withKey:(NSString *)key
+- (void)saveImageToDisk:(UIImage *)image withKey:(NSString *)key
 {
     NSString *path = [self pathToImageWithKey:key];
     NSData *data = UIImagePNGRepresentation(image);
@@ -93,7 +101,7 @@ static NSString *kCacheFolderName = @"DLILCacheFolder";
 - (NSString *)pathToImageWithKey:(NSString *)key
 {
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSString *path = [self directory];
+    NSString *path = [self cacheDirectoryPath];
     NSArray *array = [key componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@":/"]];
     for (int i = 0; i < array.count; i++) {
         NSString *s = array[i];
@@ -108,10 +116,11 @@ static NSString *kCacheFolderName = @"DLILCacheFolder";
                                          error:nil];
         }
     }
+    
     return path;
 }
 
-- (NSString *)directory
+- (NSString *)cacheDirectoryPath
 {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *path = [paths firstObject];
@@ -120,16 +129,34 @@ static NSString *kCacheFolderName = @"DLILCacheFolder";
 
 #pragma mark - clear methods
 
-- (void)clear
+- (void)clear:(void (^)(BOOL))completed
 {
-    [cache removeAllObjects];
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSString *directory = [self directory];
-    NSArray *files = [fileManager contentsOfDirectoryAtPath:directory error:nil];
-    for (NSString *file in files) {
-        NSString *path = [directory stringByAppendingPathComponent:file];
-        [fileManager removeItemAtPath:path error:nil];
-    }
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        [self.cache removeAllObjects];
+        BOOL success = YES;
+        NSError *error;
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSString *directory = [self cacheDirectoryPath];
+        NSArray *files = [fileManager contentsOfDirectoryAtPath:directory error:&error];
+        if (!error) {
+            for (NSString *file in files) {
+                NSString *path = [directory stringByAppendingPathComponent:file];
+                [fileManager removeItemAtPath:path error:&error];
+                
+                if (error) {
+                    success = NO;
+                }
+            }
+        } else {
+            success = NO;
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^(){
+            if (completed) {
+                completed(success);
+            }
+        });
+    });
 }
 
 @end

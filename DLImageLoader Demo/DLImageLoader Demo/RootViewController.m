@@ -12,7 +12,7 @@
 
 - (IBAction)btnClearCachePressed:(id)sender
 {
-    [[DLImageLoader sharedInstance] clearCache];
+    [[DLImageLoader sharedInstance] clearCache:nil];
 }
 
 @end

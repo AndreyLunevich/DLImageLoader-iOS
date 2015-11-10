@@ -24,7 +24,7 @@
 
 - (void)fillWithUrl:(NSString *)url
 {
-    [self.thumbnailView displayImageFromUrl:url];
+    [self.thumbnailView imageFromUrl:url];
 }
 
 @end
