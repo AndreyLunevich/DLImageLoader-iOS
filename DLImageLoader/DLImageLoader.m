@@ -149,7 +149,7 @@
 - (void)printLog:(NSString *)message
 {
     if ([self.delegate conformsToProtocol:@protocol(DLImageLoaderDelegate)] &&
-        [self.delegate respondsToSelector:@selector(log:)]) {
+        [self.delegate respondsToSelector:@selector(DLILLog:)]) {
         [self.delegate DLILLog:message];
     }
 }
