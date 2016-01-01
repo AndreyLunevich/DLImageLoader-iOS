@@ -42,6 +42,7 @@ static NSString *kCacheFolderName = @"DLILCacheFolder";
                                                         error:nil];
         
     });
+    
     return instance;
 }
 
@@ -60,27 +61,30 @@ static NSString *kCacheFolderName = @"DLILCacheFolder";
     if (self.memoryCacheEnabled) {
         image = [self.cache objectForKey:key];
     }
-    if (!image) {
-        if (self.diskCacheEnabled) {
-            image = [self imageFromDisk:key];
-        }
+    
+    if (!image && self.diskCacheEnabled) {
+        image = [self imageFromDisk:key];
     }
+    
     return image;
 }
 
 - (void)saveImage:(UIImage *)image byKey:(NSString *)key
 {
     if (self.memoryCacheEnabled) {
+        __weak typeof(self) weakSelf = self;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
             if (image) {
-                [self.cache setObject:image forKey:key];
+                [weakSelf.cache setObject:image forKey:key];
             }
         });
     }
     if (self.diskCacheEnabled) {
         __weak typeof(self) weakSelf = self;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-            [weakSelf saveImageToDisk:image withKey:key];
+            if (image) {
+                [weakSelf saveImageToDisk:image withKey:key];
+            }
         });
     }
 }
@@ -94,8 +98,7 @@ static NSString *kCacheFolderName = @"DLILCacheFolder";
 
 - (UIImage *)imageFromDisk:(NSString *)key
 {
-    NSString *path = [self pathToImageWithKey:key];
-    return [UIImage imageWithContentsOfFile:path];
+    return [UIImage imageWithContentsOfFile:[self pathToImageWithKey:key]];
 }
 
 - (NSString *)pathToImageWithKey:(NSString *)key
@@ -131,12 +134,13 @@ static NSString *kCacheFolderName = @"DLILCacheFolder";
 
 - (void)clear:(void (^)(BOOL))completed
 {
+    __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        [self.cache removeAllObjects];
+        [weakSelf.cache removeAllObjects];
         BOOL success = YES;
         NSError *error;
         NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSString *directory = [self cacheDirectoryPath];
+        NSString *directory = [weakSelf cacheDirectoryPath];
         NSArray *files = [fileManager contentsOfDirectoryAtPath:directory error:&error];
         if (!error) {
             for (NSString *file in files) {

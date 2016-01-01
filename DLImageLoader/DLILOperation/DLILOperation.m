@@ -67,11 +67,10 @@
         if (completed) {
             completed(nil, nil);
         }
-        return;
+    } else {
+        self.completed = completed;
+        self.canceled = canceled;
     }
-    
-    self.completed = completed;
-    self.canceled = canceled;
 }
 
 - (void)cancel
