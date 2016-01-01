@@ -24,33 +24,33 @@ Alternatively you can directly add the `DLImageLoader` folder to your project.
 ### Simple
 
 <pre>
-[[DLImageLoader sharedInstance] displayImageFromUrl:@"image_url_here"
-                                          imageView:@"UIImageView here"];
+[[DLImageLoader sharedInstance] imageFromUrl:@"image_url_here"
+                                   imageView:@"UIImageView here"];
 </pre>
 
 ### Complete
 
 <pre>
-[[DLImageLoader sharedInstance] loadImageFromUrl:@"image_url_here"
-                                       completed:^(NSError *error, UIImage *image) {
-                                          if (error == nil) {
-                                            // if we have no any errors
-                                          } else {
-                                            // if we got an error when load an image
-                                          }
-                                       }];
+[[DLImageLoader sharedInstance] imageFromUrl:@"image_url_here"
+                                   completed:^(NSError *error, UIImage *image) {
+                                      if (error == nil) {
+                                        // if we have no any errors
+                                      } else {
+                                        // if we got an error when load an image
+                                      }
+                                   }];
 </pre>
 <pre>
-[[DLImageLoader sharedInstance] loadImageFromUrl:@"image_url_here"
-                                           completed:^(NSError *error, UIImage *image) {
-                                            if (error == nil) {
-                                              // if we have no any errors
-                                            } else {
-                                              // if we got an error when load an image
-                                            }
-                                           } canceled:^{
-                                            // image loading was canceled
-                                           }];
+[[DLImageLoader sharedInstance] imageFromUrl:@"image_url_here"
+                                   completed:^(NSError *error, UIImage *image) {
+                                    if (error == nil) {
+                                      // if we have no any errors
+                                    } else {
+                                      // if we got an error when load an image
+                                    }
+                                   } canceled:^{
+                                    // image loading was canceled
+                                   }];
 </pre>
 ### Cancel loading operations
 
