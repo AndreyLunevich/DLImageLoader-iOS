@@ -15,7 +15,7 @@ class ViewController: UIViewController {
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        let request = NSURLRequest(URL: NSURL(string: "http://lialka.net/images/home/summer.jpg")!)
+        let request = NSURLRequest(URL: NSURL(string: "http://p1.pichost.me/i/64/1885741.jpg")!)
         self.imageView.imageFromRequest(request)
     }
 
