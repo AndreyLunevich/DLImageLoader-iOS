@@ -22,13 +22,13 @@ Alternatively you can directly add the `DLImageLoader` folder to your project.
 ### Simple
 
 <pre>
-DLImageLoader.sharedInstance.displayImageFromUrl("image_url_here", imageView: "UIImageView here")
+DLImageLoader.sharedInstance.imageFromUrl("image_url_here", imageView: "UIImageView here")
 </pre>
 
 ### Complete
 
 <pre>
-DLImageLoader.sharedInstance.loadImageFromUrl("image_url_here") { (error, image) -> () in
+DLImageLoader.sharedInstance.imageFromUrl("image_url_here") { (error, image) -> () in
     if (error == nil) {
         // if we have no any errors
     } else {
@@ -37,7 +37,7 @@ DLImageLoader.sharedInstance.loadImageFromUrl("image_url_here") { (error, image)
 }
 </pre>
 <pre>
-DLImageLoader.sharedInstance.loadImageFromUrl("image_url_here", completed: { (error, image) -> () in
+DLImageLoader.sharedInstance.imageFromUrl("image_url_here", completed: { (error, image) -> () in
     if (error == nil) {
         // if we have no any errors
     } else {
