@@ -18,11 +18,11 @@
 
 import UIKit
 
-class DLImageView: UIImageView {
+public class DLImageView: UIImageView {
 
-    var url: String? = ""
+    private(set) var url: String? = ""
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
@@ -31,8 +31,8 @@ class DLImageView: UIImageView {
         configureView()
     }
     
-    override func awakeFromNib() {
-        super.awakeFromNib();
+    override public func awakeFromNib() {
+        super.awakeFromNib()
         configureView()
     }
     
@@ -42,51 +42,52 @@ class DLImageView: UIImageView {
     }
 
     /**
-     Display image from url
-     @param urlString The url of image.
-    */
-    internal func displayImageFromUrl(url: String)
+     * Display image from url
+     * @param urlString The url of image.
+     */
+    public func imageFromUrl(url: String)
     {
-        displayImageFromRequest(NSURLRequest(URL: NSURL(string: url)!))
+        let request = NSURLRequest(URL: NSURL(string: url)!)
+        imageFromRequest(request)
     }
     
     /**
-     Load image from url
-     @param urlString The url of image.
-     @param completed Completed is a completion block that will call after image loading.
-    */
-    internal func loadImageFromUrl(url: String, completed:((error :NSError!, image: UIImage!) ->())? = nil)
+     * Load image from url
+     * @param urlString The url of image.
+     * @param completed Completed is a completion block that will call after image loading.
+     */
+    public func imageFromUrl(url: String, completed:((error :NSError!, image: UIImage!) ->())? = nil)
     {
-        loadImageFromRequest(NSURLRequest(URL: NSURL(string: url)!), completed: completed)
+        imageFromRequest(NSURLRequest(URL: NSURL(string: url)!), completed: completed)
     }
     
     /**
-    Display image from request
-    @param request The request of image.
-    */
-    internal func displayImageFromRequest(request: NSURLRequest)
+     * Display image from request
+     * @param request The request of image.
+     */
+    public func imageFromRequest(request: NSURLRequest)
     {
-        loadImageFromRequest(request) { (error, image) -> () in
+        imageFromRequest(request) { (error, image) -> () in
             self.image = image
         }
     }
     
     /**
-     Load image from request
-     @param request The request of image.
-     @param completed Completed is a completion block that will call after image loading.
-    */
-    internal func loadImageFromRequest(request: NSURLRequest, completed:((error :NSError!, image: UIImage!) ->())? = nil)
+     * Load image from request
+     * @param request The request of image.
+     * @param completed Completed is a completion block that will call after image loading.
+     */
+    public func imageFromRequest(request: NSURLRequest, completed:((error :NSError!, image: UIImage!) ->())? = nil)
     {
-        self.url = request.URL?.absoluteString;
-        self.image = nil;
-        DLImageLoader.sharedInstance.loadImageFromRequest(request, completed: completed)
+        self.url = request.URL?.absoluteString
+        self.image = nil
+        DLImageLoader.sharedInstance.imageFromRequest(request, completed: completed)
     }
     
     /**
-     Cancel started operation
-    */
-    internal func cancelLoading()
+     * Cancel started operation
+     */
+    public func cancelLoading()
     {
         DLImageLoader.sharedInstance.cancelOperation(self.url)
     }

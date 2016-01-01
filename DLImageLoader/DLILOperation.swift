@@ -18,54 +18,47 @@
 
 import UIKit
 
+typealias CompletionBlock = (error: NSError?, image: UIImage?) -> ()
+typealias CancelBlock = () -> ()
+
 class DLILOperation: NSOperation, NSURLConnectionDelegate {
     
-    typealias CompletionBlock = (error: NSError?, image: UIImage?) -> ()
-    typealias CancelBlock = () -> ()
-    
-    var completed: CompletionBlock! = nil;
-    var canceled: CancelBlock! = nil;
-    var data: NSMutableData = NSMutableData();
-    var connection: NSURLConnection! = nil;
-    var request: NSURLRequest! = nil;
+    var completed: CompletionBlock?
+    var canceled: CancelBlock?
+    var data: NSMutableData = NSMutableData()
+    var connection: NSURLConnection! = nil
+    var request: NSURLRequest! = nil
     
     override func cancel()
     {
-        self.connection.cancel();
-        self.connection = nil;
+        self.connection.cancel()
+        self.connection = nil
         self.data.setData(NSData(bytes: nil, length: 0))
-        if (self.canceled != nil) {
-            self.canceled();
-        }
+        self.canceled?()
     }
     
     internal func url() -> String {
-        return (self.request.URL?.absoluteString)!;
+        return self.request.URL!.absoluteString
     }
     
-    internal func startLoading(request: NSURLRequest, completed: CompletionBlock!, canceled: CancelBlock!)
+    internal func startLoading(request: NSURLRequest, completed: CompletionBlock?, canceled: CancelBlock?)
     {
-        self.request = request;
-        if (url().characters.count == 0) {
-            // fail loading
-            if (completed != nil) {
-                completed(error: nil, image: nil);
+        self.request = request
+        if url().characters.count == 0 {
+            completed?(error: nil, image: nil) // fail loading
+        } else {
+            self.completed = completed
+            self.canceled = canceled
+            self.connection = NSURLConnection(request: request, delegate: self)
+            if self.connection == nil {
+                cancel()
             }
-            return;
-        }
-        
-        self.completed = completed;
-        self.canceled = canceled;
-        
-        self.connection = NSURLConnection(request: request, delegate: self)
-        if (self.connection == nil) {
-            cancel();
         }
     }
     
     /**
-     pragma mark - NSURLConnectionDataDelegate
-    */
+     * pragma mark - NSURLConnectionDataDelegate
+     */
     
     func connection(connection: NSURLConnection!, didReceiveData data: NSData!)
     {
@@ -75,16 +68,12 @@ class DLILOperation: NSOperation, NSURLConnectionDelegate {
     func connectionDidFinishLoading(connection: NSURLConnection!)
     {
         // successfull loading
-        if (self.completed != nil) {
-            self.completed(error: nil, image: UIImage(data: self.data));
-        }
+        self.completed?(error: nil, image: UIImage(data: self.data))
     }
     
     func connection(connection: NSURLConnection, didFailWithError error: NSError)
     {
         // fail loading
-        if (self.completed != nil) {
-            self.completed(error: nil, image: nil);
-        }
+        self.completed?(error: nil, image: nil)
     }
 }
