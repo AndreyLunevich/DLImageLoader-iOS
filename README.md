@@ -7,7 +7,7 @@ DLImageLoader-Objective-C
 
 [CocoaPods](http://cocoapods.org) is the recommended way to add DLImageLoader to your project.
 
-1. Add a pod entry for DLImageLoader to your Podfile `pod 'DLImageLoader', '~> 2.1.1'`
+1. Add a pod entry for DLImageLoader to your Podfile `pod 'DLImageLoader', '~> 2.2.0'`
 2. Install the pod(s) by running `pod install`.
 3. Include DLImageLoader wherever you need it with `#import "DLIL.h"` (e.g. SomeViewController.m or AppName-Prefix.pch).
 
