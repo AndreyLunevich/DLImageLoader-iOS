@@ -136,7 +136,7 @@ class DLILCacheManager: NSObject {
     
     private func cacheDirectoryPath() -> String
     {
-        let path = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
+        let path = NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true)[0] as NSString
         return path.stringByAppendingPathComponent(kCacheFolderName)
     }
     
