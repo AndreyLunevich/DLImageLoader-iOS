@@ -125,7 +125,7 @@ static NSString *kCacheFolderName = @"DLILCacheFolder";
 
 - (NSString *)cacheDirectoryPath
 {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString *path = [paths firstObject];
     return [path stringByAppendingPathComponent:kCacheFolderName];
 }
