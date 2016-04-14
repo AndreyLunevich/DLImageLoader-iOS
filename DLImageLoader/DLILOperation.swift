@@ -21,12 +21,12 @@ import UIKit
 typealias CompletionBlock = (error: NSError?, image: UIImage?) -> ()
 typealias CancelBlock = () -> ()
 
-class DLILOperation: NSOperation, NSURLConnectionDelegate {
+class DLILOperation: NSOperation, NSURLSessionDataDelegate {
     
     var completed: CompletionBlock?
     var canceled: CancelBlock?
     var data: NSMutableData = NSMutableData()
-    var connection: NSURLConnection! = nil
+    var connection: NSURLSessionTask! = nil
     var request: NSURLRequest! = nil
     
     override func cancel()
@@ -49,7 +49,9 @@ class DLILOperation: NSOperation, NSURLConnectionDelegate {
         } else {
             self.completed = completed
             self.canceled = canceled
-            self.connection = NSURLConnection(request: request, delegate: self)
+            let connection = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration(), delegate: self, delegateQueue: nil)
+            self.connection = connection.dataTaskWithRequest(request)
+            self.connection.resume()
             if self.connection == nil {
                 cancel()
             }
@@ -57,23 +59,21 @@ class DLILOperation: NSOperation, NSURLConnectionDelegate {
     }
     
     /**
-     * pragma mark - NSURLConnectionDataDelegate
+     * pragma mark - NSURLSessionDataDelegate
      */
-    
-    func connection(connection: NSURLConnection!, didReceiveData data: NSData!)
+
+    func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData)
     {
         self.data.appendData(data)
     }
-    
-    func connectionDidFinishLoading(connection: NSURLConnection!)
-    {
-        // successfull loading
-        self.completed?(error: nil, image: UIImage(data: self.data))
-    }
-    
-    func connection(connection: NSURLConnection, didFailWithError error: NSError)
+
+    func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?)
     {
         // fail loading
-        self.completed?(error: nil, image: nil)
+        if (error != nil) {
+            self.completed?(error: nil, image: nil)
+        }
+        // successfull loading
+        self.completed?(error: nil, image: UIImage(data: self.data))
     }
 }
