@@ -35,15 +35,10 @@ public class DLImageView: UIImageView {
         super.awakeFromNib()
         configureView()
     }
-    
-    private func configureView()
-    {
-        self.contentMode = UIViewContentMode.ScaleAspectFit
-    }
 
     /**
-     * Display image from url
-     * @param urlString The url of image.
+        Display image from url
+        - parameter url: The url of image.
      */
     public func imageFromUrl(url: String)
     {
@@ -52,9 +47,9 @@ public class DLImageView: UIImageView {
     }
     
     /**
-     * Load image from url
-     * @param urlString The url of image.
-     * @param completed Completed is a completion block that will call after image loading.
+        Load image from url
+        - parameter url: The url of image.
+        - parameter completed: Completion block that will be called after image loading.
      */
     public func imageFromUrl(url: String, completed:((error :NSError!, image: UIImage!) ->())? = nil)
     {
@@ -62,8 +57,8 @@ public class DLImageView: UIImageView {
     }
     
     /**
-     * Display image from request
-     * @param request The request of image.
+        Display image from request
+        - parameter request: The request of image.
      */
     public func imageFromRequest(request: NSURLRequest)
     {
@@ -73,11 +68,12 @@ public class DLImageView: UIImageView {
     }
     
     /**
-     * Load image from request
-     * @param request The request of image.
-     * @param completed Completed is a completion block that will call after image loading.
+        Load image from request
+        - parameter request: The request of image.
+        - parameter completed: Completion block that will be called after image loading.
      */
-    public func imageFromRequest(request: NSURLRequest, completed:((error :NSError!, image: UIImage!) ->())? = nil)
+    public func imageFromRequest(request: NSURLRequest,
+                                 completed:((error :NSError!, image: UIImage!) ->())? = nil)
     {
         self.url = request.URL?.absoluteString
         self.image = nil
@@ -85,10 +81,18 @@ public class DLImageView: UIImageView {
     }
     
     /**
-     * Cancel started operation
+        Cancel started operation
      */
     public func cancelLoading()
     {
         DLImageLoader.sharedInstance.cancelOperation(self.url)
+    }
+    
+    
+    // MARK: - private methods
+    
+    private func configureView()
+    {
+        self.contentMode = UIViewContentMode.ScaleAspectFit
     }
 }

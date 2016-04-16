@@ -21,23 +21,21 @@ import UIKit
 class DLILCacheManager: NSObject {
     
     private let kCacheFolderName = "DLILCacheFolder"
-    
-    var cache: NSCache = NSCache()
+
+    private var cache = NSCache()
     
     /**
-     * Memory cache
-     * @param memoryCacheEnabled by default is true
+        Memory cache, memoryCacheEnabled by default is true
      */
     internal var memoryCacheEnabled = true
     
     /**
-     * Disk cache
-     * @param diskCacheEnabled by default is true
+        Disk cache, diskCacheEnabled by default is true
      */
     internal var diskCacheEnabled = true
     
     /**
-     * DLILCacheManager instance
+        DLILCacheManager instance
      */
     internal static let sharedInstance = DLILCacheManager()
     
@@ -55,17 +53,19 @@ class DLILCacheManager: NSObject {
     }
     
     /**
-     * Get the image from the cache by the key.
-     * At first will try to get image from memory cache
-     * If image will not found, will try to get image from disk cache
-     * @param key. Key of image in cache.
+        Get the image from the cache by the key (image url).
+        At first will try to get image from memory cache
+        If image will not found, will try to get image from disk cache
+        - parameter key: Url of image that using as cache key.
      */
     internal func imageByKey(key: String) -> UIImage?
     {
         var image: UIImage? = nil
+        
         if self.memoryCacheEnabled {
             image = self.cache.objectForKey(key) as? UIImage
         }
+        
         if image == nil {
             if self.diskCacheEnabled {
                 image = self.imageFromDisk(key)
@@ -76,9 +76,9 @@ class DLILCacheManager: NSObject {
     }
     
     /**
-     * Save the image in the cache for the key.
-     * @param image. UIImage to save in cache.
-     * @param key. Key of image in cache.
+        Save the image in the cache for the key (image url).
+        - parameter image: UIImage to save in cache.
+        - parameter key: Url of image that using as cache key
      */
     internal func saveImage(image: UIImage?, forKey: String)
     {
@@ -98,50 +98,8 @@ class DLILCacheManager: NSObject {
         }
     }
     
-    private func saveImageToDisk(image :UIImage, withKey: String)
-    {
-        let path = self.pathToImageWithKey(withKey)
-        let data = UIImagePNGRepresentation(image)
-        data?.writeToFile(path, atomically: true)
-    }
-    
-    private func imageFromDisk(key: String) -> UIImage?
-    {
-        let path = self.pathToImageWithKey(key)
-        return UIImage(contentsOfFile: path)
-    }
-    
-    private func pathToImageWithKey(key: String) -> String
-    {
-        let fileManager = NSFileManager.defaultManager()
-        var path = self.cacheDirectoryPath()
-        let array = key.componentsSeparatedByString(":/")
-        for i in 0..<array.count {
-            let s = array[i]
-            if s.characters.count == 0 {
-                continue
-            }
-            path = path.stringByAppendingString(s)
-            if i != array.count - 1 && !fileManager.fileExistsAtPath(path) {
-                do {
-                    try fileManager.createDirectoryAtPath(path, withIntermediateDirectories: false, attributes: nil)
-                } catch let error as NSError {
-                    print(error.description)
-                }
-            }
-        }
-        
-        return path
-    }
-    
-    private func cacheDirectoryPath() -> String
-    {
-        let path = NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true)[0] as NSString
-        return path.stringByAppendingPathComponent(kCacheFolderName)
-    }
-    
     /**
-     * Clear memory and disk cache
+        Clear memory and disk cache
      */
     internal func clear(completed:((success: Bool) ->())?)
     {
@@ -153,7 +111,7 @@ class DLILCacheManager: NSObject {
             do {
                 let files = try fileManager.contentsOfDirectoryAtPath(directory)
                 for file in files {
-                    let path = directory.stringByAppendingString(file)
+                    let path = self.getOrCreatePathToImageWithKey(file)
                     do {
                         try fileManager.removeItemAtPath(path)
                     } catch {
@@ -168,5 +126,41 @@ class DLILCacheManager: NSObject {
                 completed?(success: success)
             })
         }
+    }
+    
+    
+    // MARK: - private methods
+    
+    private func saveImageToDisk(image :UIImage, withKey: String)
+    {
+        let path = self.getOrCreatePathToImageWithKey(withKey)
+        let data = UIImagePNGRepresentation(image)
+        data?.writeToFile(path, atomically: true)
+    }
+    
+    private func imageFromDisk(key: String) -> UIImage?
+    {
+        let path = self.getOrCreatePathToImageWithKey(key)
+        return UIImage(contentsOfFile: path)
+    }
+    
+    private func getOrCreatePathToImageWithKey(key: String) -> String
+    {
+        let imageName = key.stringByReplacingOccurrencesOfString("/", withString: "_")
+        let path = (self.cacheDirectoryPath() as NSString).stringByAppendingPathComponent(imageName)
+        
+        // create file if not exist
+        let fileManager = NSFileManager.defaultManager()
+        if !fileManager.fileExistsAtPath(path) {
+            fileManager.createFileAtPath(path, contents: nil, attributes: nil)
+        }
+        
+        return path
+    }
+    
+    private func cacheDirectoryPath() -> String
+    {
+        let path = NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true)[0] as NSString
+        return path.stringByAppendingPathComponent(kCacheFolderName)
     }
 }

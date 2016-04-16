@@ -18,32 +18,29 @@
 
 import UIKit
 
-@objc protocol DLImageLoaderDelegate {
-    
-    optional func DLILLog(message: String)
-}
-
 public class DLImageLoader: NSObject {
     
-    private var queue: NSOperationQueue = NSOperationQueue()
-    var delegate: DLImageLoaderDelegate?
+    private var session: NSURLSession!
+    
+    public var enableLog = false
     
     /**
-     * Instance method
-     * @return shared instance.
+        Instance method
+        - returns: DLImageLoader instance.
      */
     public static let sharedInstance = DLImageLoader()
     
-    private func updateImageView(imageView: UIImageView, image: UIImage?)
-    {
-        imageView.image = image
-        imageView.setNeedsDisplay()
+    override init() {
+        super.init()
+        self.session = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration(),
+                                    delegate: nil,
+                                    delegateQueue: NSOperationQueue.mainQueue())
     }
     
     /**
-     * Load image from url
-     * @param url The url of image.
-     * @param imageView UIImageView in which will display image.
+        Load image from url
+        - parameter url: The url of image.
+        - parameter imageView: UIImageView in which will display image.
      */
     public func imageFromUrl(url: String, imageView: UIImageView)
     {
@@ -52,9 +49,9 @@ public class DLImageLoader: NSObject {
     }
     
     /**
-     * Load image from url
-     * @param url The url of image.
-     * @param completed Completed is a completion block that will call after image loading.
+        Load image from url
+        - parameter url: The url of image.
+        - parameter completed: Completion block that will be called after image loading.
      */
     public func imageFromUrl(url: String, completed:((error :NSError!, image: UIImage!) ->()))
     {
@@ -62,10 +59,10 @@ public class DLImageLoader: NSObject {
     }
     
     /**
-     * Load image from url
-     * @param url The url of image.
-     * @param completed Completed is a completion block that will call after image loading.
-     * @param canceled Canceled is a block that will if loading opedation was calceled.
+        Load image from url
+        - parameter url: The url of image.
+        - parameter completed: Completion block that will be called after image loading.
+        - parameter canceled: Cancellation block that will be called if loading was canceled.
      */
     public func imageFromUrl(url: String, completed:((error :NSError!, image: UIImage!) ->())? = nil, canceled:(() -> ())? = nil)
     {
@@ -74,9 +71,9 @@ public class DLImageLoader: NSObject {
     }
     
     /**
-     * Load image from request
-     * @param request The request of image.
-     * @param imageView UIImageView in which will display image.
+        Load image from request
+        - parameter request: The request of image.
+        - parameter imageView: UIImageView in which will display image.
      */
     public func imageFromRequest(request: NSURLRequest, imageView: UIImageView)
     {
@@ -89,9 +86,9 @@ public class DLImageLoader: NSObject {
     }
     
     /**
-     * Load image from request
-     * @param request The request of image.
-     * @param completed Completed is a completion block that will call after image loading.
+        Load image from request
+        - parameter request: The request of image.
+        - parameter completed: Completion block that will be called after image loading.
      */
     public func imageFromRequest(request: NSURLRequest, completed:((error :NSError!, image: UIImage!) ->()))
     {
@@ -99,68 +96,112 @@ public class DLImageLoader: NSObject {
     }
     
     /**
-     * Load image from request
-     * @param request The request of image.
-     * @param completed Completed is a completion block that will call after image loading.
-     * @param canceled Canceled is a block that will if loading opedation was calceled.
+        Load image from request
+        - parameter request: The request of image.
+        - parameter completed: Completion block that will be called after image loading.
+        - parameter canceled: Cancellation block that will be called if loading was canceled.
      */
-    public func imageFromRequest(request: NSURLRequest, completed:((error :NSError!, image: UIImage!) ->())? = nil, canceled:(() -> ())? = nil)
+    public func imageFromRequest(request: NSURLRequest,
+                                 completed:((error :NSError!, image: UIImage!) ->())? = nil,
+                                 canceled:(() -> ())? = nil)
     {
-        let url = request.URL!.absoluteString
-        let image = DLILCacheManager.sharedInstance.imageByKey(url)
-        self.delegate?.DLILLog!("DLImageLoader: image with url => \(url)")
-        if image != nil {
-            self.delegate?.DLILLog!("DLImageLoader: got an image from the cache")
-            completed?(error: nil, image: image)
-        } else {
-            let operation:DLILOperation = DLILOperation()
-            operation.startLoading(request, completed: { (error, image) -> () in
-                if error != nil {
-                    self.delegate?.DLILLog!("DLImageLoader: error of image loading => \(error)")
+        if let url = request.URL?.absoluteString {
+            let image = DLILCacheManager.sharedInstance.imageByKey(url)
+            self.printLog("loading image from url => \(url)")
+            
+            if image != nil {
+                self.printLog("got an image from the cache")
+                completed?(error: nil, image: image)
+            } else {
+                if url.characters.count == 0 {
+                    completed?(error: nil, image: nil) // fail loading
                 } else {
-                    self.delegate?.DLILLog!("DLImageLoader: loaded image with url => \(url)")
+                    let task = self.session.dataTaskWithRequest(request, completionHandler: { (data, response, error) in
+                        if error != nil && error!.code == NSURLErrorCancelled {
+                            canceled?()
+                            
+                            self.printLog("cancelled loading image from url \(url)")
+                        } else {
+                            let image = data != nil ? UIImage(data: data!) : nil
+                            
+                            if error != nil {
+                                self.printLog("error image loading \(error)")
+                            } else {
+                                // save loaded image to cache
+                                DLILCacheManager.sharedInstance.saveImage(image, forKey: url)
+                                
+                                self.printLog("loaded image from url => \(url)")
+                            }
+                            
+                            completed?(error: error, image: image)
+                        }
+                    })
+                    task.resume()
                 }
-                // save loaded image to cache
-                DLILCacheManager.sharedInstance.saveImage(image, forKey: url)
-                completed?(error: error, image: image)
-            }, canceled: { () -> () in
-                self.delegate?.DLILLog!("DLImageLoader: image loading is canceled")
-                canceled?()
-            })
-            self.queue.addOperation(operation)
+            }
+        } else {
+            completed?(error: nil, image: nil) // fail loading
         }
     }
     
     /**
-     * Cancel operation
-     * @param url. Url of operation to stop
+        Cancel task
+        - parameter url: Url to stop a task
      */
     public func cancelOperation(url: String!)
     {
-        for operation in self.queue.operations {
-            if let dlil = operation as? DLILOperation {
-                if dlil.url() == url {
-                    dlil.cancel()
+        allTasksOfSession(self.session) { (tasks) in
+            for task in tasks {
+                if task.currentRequest?.URL?.absoluteString == url {
+                    task.cancel()
                 }
             }
         }
     }
     
     /**
-     * Stop all active operations
+        Stop all active tasks
      */
     public func cancelAllOperations()
     {
-        for operation in self.queue.operations {
-            operation.cancel()
+        allTasksOfSession(self.session) { (tasks) in
+            for task in tasks {
+                task.cancel()
+            }
         }
     }
     
     /**
-     * Clear cache of DLImageLoader
+        Clear cache of DLImageLoader
      */
     public func clearCache(completed:((success: Bool) ->())?)
     {
         DLILCacheManager.sharedInstance.clear(completed)
+    }
+    
+    
+    // MARK: - private methods
+    
+    private func updateImageView(imageView: UIImageView, image: UIImage?)
+    {
+        imageView.image = image
+        imageView.setNeedsDisplay()
+    }
+    
+    private func allTasksOfSession(session: NSURLSession,
+                                   completionHandler: ([NSURLSessionTask]) -> Void)
+    {
+        session.getTasksWithCompletionHandler { (data, upload, download) in
+            let tasks = data as [NSURLSessionTask] +
+                upload as [NSURLSessionTask] +
+                download as [NSURLSessionTask]
+            completionHandler(tasks)
+        }
+    }
+    
+    private func printLog(message: String) {
+        if self.enableLog {
+            print("DLImageLoader: \(message)")
+        }
     }
 }
