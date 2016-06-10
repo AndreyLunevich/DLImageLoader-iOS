@@ -20,7 +20,8 @@ Objective-C version will be fully moved to [objc](https://github.com/AndreyLunev
 
 [Nootri The Nutrition Manager](https://itunes.apple.com/US/app/id912109727?mt=8) |
 [Plusarium](https://itunes.apple.com/us/app/plusarium/id901280642?l=ru&ls=1&mt=8) |
-[Naomuseum](https://itunes.apple.com/ru/app/naomuseum/id847290457?mt=8) | [Aerobia](https://itunes.apple.com/us/app/aerobia/id566375588?mt=8) | [StreetForm](https://itunes.apple.com/us/app/easy/id874395902?ls=1&mt=8)
+[Naomuseum](https://itunes.apple.com/ru/app/naomuseum/id847290457?mt=8) | [Aerobia](https://itunes.apple.com/us/app/aerobia/id566375588?mt=8) | [StreetForm](https://itunes.apple.com/us/app/easy/id874395902?ls=1&mt=8) |
+[Share TV](https://itunes.apple.com/br/app/share-tv-rede-social-para/id1097456577?mt=8)
 
 ## License
 
