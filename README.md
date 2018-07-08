@@ -6,11 +6,14 @@ This project aims to provide a reusable instrument for asynchronous image loadin
 
 ![Screenshot](https://raw.githubusercontent.com/AndreyLunevich/DLImageLoader-iOS/master/dlil.png)
 
-## Versions
+## Instalation
+
+| Swift | DLImageLoader |
+| ----- | ------------- |
+| 4.X   | -             |
+| 2.2   | 1.2.0-swift   |
 
 [Objective-C](https://github.com/AndreyLunevich/DLImageLoader-iOS/tree/objc) - "DLImageLoader", "~> 2.2.0"
-
-[Swift 2.0](https://github.com/AndreyLunevich/DLImageLoader-iOS/tree/swift) - "DLImageLoader", "1.2.0-swift"
 
 ## Plans
 
