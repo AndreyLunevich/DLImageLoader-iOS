@@ -19,101 +19,100 @@
 import UIKit
 
 class DLILCacheManager: NSObject {
-    
+
     private let kCacheFolderName = "DLILCacheFolder"
 
-    private var cache = NSCache()
-    
+    private var cache = NSCache<NSString, UIImage>()
+
     /**
-        Memory cache, memoryCacheEnabled by default is true
+     Memory cache, memoryCacheEnabled by default is true
      */
     internal var memoryCacheEnabled = true
-    
+
     /**
-        Disk cache, diskCacheEnabled by default is true
+     Disk cache, diskCacheEnabled by default is true
      */
     internal var diskCacheEnabled = true
-    
+
     /**
-        DLILCacheManager instance
+     DLILCacheManager instance
      */
-    internal static let sharedInstance = DLILCacheManager()
-    
+    internal static let shared = DLILCacheManager()
+
     override init() {
         super.init()
         do {
+            let path = self.cacheDirectoryPath()
             var isDir: ObjCBool = false
-            let fileManager = NSFileManager.defaultManager()
-            if !fileManager.fileExistsAtPath(self.cacheDirectoryPath(), isDirectory: &isDir) {
-                try fileManager.createDirectoryAtPath(self.cacheDirectoryPath(), withIntermediateDirectories: false, attributes: nil)
+            let fileManager = FileManager.default
+            if !fileManager.fileExists(atPath: path, isDirectory: &isDir) {
+                try fileManager.createDirectory(atPath: path, withIntermediateDirectories: false, attributes: nil)
             }
-        } catch let error as NSError {
-            print(error.description)
+        } catch {
+            print(error.localizedDescription)
         }
     }
-    
+
     /**
-        Get the image from the cache by the key (image url).
-        At first will try to get image from memory cache
-        If image will not found, will try to get image from disk cache
-        - parameter key: Url of image that using as cache key.
+     Get the image from the cache by the key (image url).
+     At first will try to get image from memory cache
+     If image will not found, will try to get image from disk cache
+     - parameter key: Url of image that using as cache key.
      */
-    internal func imageByKey(key: String) -> UIImage?
-    {
+    internal func imageByKey(key: String) -> UIImage? {
         var image: UIImage? = nil
-        
+
         if self.memoryCacheEnabled {
-            image = self.cache.objectForKey(key) as? UIImage
+            image = self.cache.object(forKey: key as NSString)
         }
-        
+
         if image == nil {
             if self.diskCacheEnabled {
-                image = self.imageFromDisk(key)
+                image = self.imageFromDisk(key: key)
             }
         }
-        
+
         return image
     }
-    
+
     /**
-        Save the image in the cache for the key (image url).
-        - parameter image: UIImage to save in cache.
-        - parameter key: Url of image that using as cache key
+     Save the image in the cache for the key (image url).
+     - parameter image: UIImage to save in cache.
+     - parameter key: Url of image that using as cache key
      */
-    internal func saveImage(image: UIImage?, forKey: String)
-    {
+    internal func saveImage(image: UIImage?, forKey: String) {
         if self.memoryCacheEnabled {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) {
-                if image != nil {
-                    self.cache.setObject(image!, forKey: forKey)
+            DispatchQueue.global(qos: .background).async {
+                if let image = image {
+                    self.cache.setObject(image, forKey: forKey as NSString)
                 }
             }
         }
+
         if self.diskCacheEnabled {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) {
-                if image != nil {
-                    self.saveImageToDisk(image!, withKey: forKey)
+            DispatchQueue.global(qos: .background).async {
+                if let image = image {
+                    self.saveImageToDisk(image: image, withKey: forKey)
                 }
             }
         }
     }
-    
+
     /**
-        Clear memory and disk cache
+     Clear memory and disk cache
      */
-    internal func clear(completed:((success: Bool) ->())?)
-    {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) {
+    internal func clear(completed:((_ success: Bool) ->())?) {
+        DispatchQueue.global(qos: .background).async {
             var success: Bool = true
             self.cache.removeAllObjects()
-            let fileManager = NSFileManager.defaultManager()
+            let fileManager = FileManager.default
             let directory = self.cacheDirectoryPath()
             do {
-                let files = try fileManager.contentsOfDirectoryAtPath(directory)
+                let files = try fileManager.contentsOfDirectory(atPath: directory)
                 for file in files {
-                    let path = self.getOrCreatePathToImageWithKey(file)
+                    let path = self.getOrCreatePathToImageWithKey(key: file)
                     do {
-                        try fileManager.removeItemAtPath(path)
+                        try fileManager.removeItem(atPath: path)
                     } catch {
                         success = false
                     }
@@ -121,46 +120,49 @@ class DLILCacheManager: NSObject {
             } catch {
                 success = false
             }
-            
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                completed?(success: success)
-            })
+
+            DispatchQueue.main.async {
+                completed?(success)
+            }
         }
     }
-    
-    
+
+
     // MARK: - private methods
-    
-    private func saveImageToDisk(image :UIImage, withKey: String)
-    {
-        let path = self.getOrCreatePathToImageWithKey(withKey)
+
+    private func saveImageToDisk(image :UIImage, withKey: String) {
+        let path = self.getOrCreatePathToImageWithKey(key: withKey)
         let data = UIImagePNGRepresentation(image)
-        data?.writeToFile(path, atomically: true)
+
+        do {
+            try data?.write(to: URL(fileURLWithPath: path), options: .atomic)
+        } catch {
+            print(error)
+        }
     }
-    
-    private func imageFromDisk(key: String) -> UIImage?
-    {
-        let path = self.getOrCreatePathToImageWithKey(key)
+
+    private func imageFromDisk(key: String) -> UIImage? {
+        let path = self.getOrCreatePathToImageWithKey(key: key)
+
         return UIImage(contentsOfFile: path)
     }
-    
-    private func getOrCreatePathToImageWithKey(key: String) -> String
-    {
-        let imageName = key.stringByReplacingOccurrencesOfString("/", withString: "_")
-        let path = (self.cacheDirectoryPath() as NSString).stringByAppendingPathComponent(imageName)
-        
+
+    private func getOrCreatePathToImageWithKey(key: String) -> String {
+        let imageName = key.replacingOccurrences(of: "/", with: "_")
+        let path = (self.cacheDirectoryPath() as NSString).appendingPathComponent(imageName)
+
         // create file if not exist
-        let fileManager = NSFileManager.defaultManager()
-        if !fileManager.fileExistsAtPath(path) {
-            fileManager.createFileAtPath(path, contents: nil, attributes: nil)
+        let fileManager = FileManager.default
+        if !fileManager.fileExists(atPath: path) {
+            fileManager.createFile(atPath: path, contents: nil, attributes: nil)
         }
-        
+
         return path
     }
-    
-    private func cacheDirectoryPath() -> String
-    {
-        let path = NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true)[0] as NSString
-        return path.stringByAppendingPathComponent(kCacheFolderName)
+
+    private func cacheDirectoryPath() -> String {
+        let path = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true)[0] as NSString
+
+        return path.appendingPathComponent(kCacheFolderName)
     }
 }

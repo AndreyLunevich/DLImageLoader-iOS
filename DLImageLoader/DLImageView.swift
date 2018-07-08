@@ -21,78 +21,65 @@ import UIKit
 public class DLImageView: UIImageView {
 
     private(set) var url: String? = ""
-    
+
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureView()
     }
-    
+
     override public func awakeFromNib() {
         super.awakeFromNib()
         configureView()
     }
 
     /**
-        Display image from url
-        - parameter url: The url of image.
+     Load image from url
+     - parameter url: The url of image.
+     - parameter completed: Completion block that will be called after image loading.
      */
-    public func imageFromUrl(url: String)
-    {
-        let request = NSURLRequest(URL: NSURL(string: url)!)
-        imageFromRequest(request)
-    }
-    
-    /**
-        Load image from url
-        - parameter url: The url of image.
-        - parameter completed: Completion block that will be called after image loading.
-     */
-    public func imageFromUrl(url: String, completed:((error :NSError!, image: UIImage!) ->())? = nil)
-    {
-        imageFromRequest(NSURLRequest(URL: NSURL(string: url)!), completed: completed)
-    }
-    
-    /**
-        Display image from request
-        - parameter request: The request of image.
-     */
-    public func imageFromRequest(request: NSURLRequest)
-    {
-        imageFromRequest(request) { (error, image) -> () in
-            self.image = image
+    public func image(for url: String, completed: DLILCompletion? = nil) {
+        guard let url = URL(string: url) else {
+            completed?(nil, nil)
+
+            return
         }
+
+        image(for: URLRequest(url: url), completed: completed)
     }
-    
+
     /**
-        Load image from request
-        - parameter request: The request of image.
-        - parameter completed: Completion block that will be called after image loading.
+     Load image from request
+     - parameter request: The request of image.
+     - parameter completed: Completion block that will be called after image loading.
      */
-    public func imageFromRequest(request: NSURLRequest,
-                                 completed:((error :NSError!, image: UIImage!) ->())? = nil)
-    {
-        self.url = request.URL?.absoluteString
+    public func image(for request: URLRequest, completed: DLILCompletion? = nil) {
+        self.url = request.url?.absoluteString
         self.image = nil
-        DLImageLoader.sharedInstance.imageFromRequest(request, completed: completed)
+
+        DLImageLoader.shared.image(for: request, completed: { [weak self] (image, error) in
+            if let completion = completed {
+                completion(image, error)
+            } else {
+                self?.image = image
+            }
+        })
     }
-    
+
     /**
-        Cancel started operation
+     Cancel started operation
      */
-    public func cancelLoading()
-    {
-        DLImageLoader.sharedInstance.cancelOperation(self.url)
+    public func cancelLoading() {
+        DLImageLoader.shared.cancelOperation(url: self.url)
     }
-    
-    
+
+
     // MARK: - private methods
-    
-    private func configureView()
-    {
-        self.contentMode = UIViewContentMode.ScaleAspectFit
+
+    private func configureView() {
+        self.contentMode = UIViewContentMode.scaleAspectFit
     }
 }
