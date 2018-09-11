@@ -33,9 +33,9 @@ public class DLImageLoader {
     public static let shared = DLImageLoader()
 
     private init() {
-        self.session = URLSession(configuration: URLSessionConfiguration.default,
-                                  delegate: nil,
-                                  delegateQueue: OperationQueue.main)
+        session = URLSession(configuration: URLSessionConfiguration.default,
+                             delegate: nil,
+                             delegateQueue: OperationQueue.main)
     }
 
     /**
@@ -43,8 +43,8 @@ public class DLImageLoader {
      - parameter url: The url of image.
      - parameter imageView: UIImageView in which will display image.
      */
-    public func image(for url: String, imageView: UIImageView) {
-        guard let url = URL(string: url) else { return }
+    public func image(from url: URL?, into imageView: UIImageView) {
+        guard let url = url else { return }
 
         image(for: URLRequest(url: url), imageView: imageView)
     }
@@ -55,8 +55,8 @@ public class DLImageLoader {
      - parameter completed: Completion block that will be called after image loading.
      - parameter canceled: Cancellation block that will be called if loading was canceled.
      */
-    public func image(for url: String, completed: DLILCompletion? = nil) {
-        guard let url = URL(string: url) else { return }
+    public func image(for url: URL?, completed: DLILCompletion? = nil) {
+        guard let url = url else { return }
 
         image(for: URLRequest(url: url), completed: completed)
     }
@@ -69,8 +69,8 @@ public class DLImageLoader {
     public func image(for request: URLRequest, imageView: UIImageView) {
         imageView.image = nil
 
-        image(for: request) { (image, _) -> () in
-            self.updateImageView(imageView, image: image)
+        image(for: request) { [weak self] (image, _) in
+            self?.updateImageView(imageView, image: image)
         }
     }
 
@@ -87,25 +87,25 @@ public class DLImageLoader {
             return
         }
 
-        self.log(message: "loading image from url => \(url)")
+        log(message: "loading image from url => \(url)")
 
         if let image = DLILCacheManager.shared.imageByKey(key: url) {
-            self.log(message: "got an image from the cache")
+            log(message: "got an image from the cache")
 
             completed?(image, nil)
         } else {
-            let task = self.session.dataTask(with: request, completionHandler: { (data, response, error) in
+            let task = session.dataTask(with: request, completionHandler: { [weak self] (data, response, error) in
                 var image: UIImage?
 
                 if let error = error {
-                    self.log(message: "error image loading \(error)")
+                    self?.log(message: "error image loading \(error)")
                 } else if let data = data {
                     image = UIImage(data: data)
 
                     // save loaded image to cache
                     DLILCacheManager.shared.saveImage(image: image, forKey: url)
 
-                    self.log(message: "loaded image from url => \(url)")
+                    self?.log(message: "loaded image from url => \(url)")
                 }
 
                 completed?(image, error)
@@ -120,7 +120,7 @@ public class DLImageLoader {
      - parameter url: Url to stop a task
      */
     public func cancelOperation(url: String!) {
-        allTasks(of: self.session) { (tasks) in
+        allTasks(of: session) { (tasks) in
             for task in tasks {
                 if task.currentRequest?.url?.absoluteString == url {
                     task.cancel()
@@ -133,7 +133,7 @@ public class DLImageLoader {
      Stop all active tasks
      */
     public func cancelAllOperations() {
-        allTasks(of: self.session) { (tasks) in
+        allTasks(of: session) { (tasks) in
             for task in tasks {
                 task.cancel()
             }
@@ -164,7 +164,7 @@ public class DLImageLoader {
     }
 
     private func log(message: String) {
-        if self.enableLog {
+        if enableLog {
             print("DLImageLoader: \(message)")
         }
     }

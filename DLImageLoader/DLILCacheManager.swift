@@ -42,7 +42,7 @@ class DLILCacheManager: NSObject {
     override init() {
         super.init()
         do {
-            let path = self.cacheDirectoryPath()
+            let path = cacheDirectoryPath()
             var isDir: ObjCBool = false
             let fileManager = FileManager.default
             if !fileManager.fileExists(atPath: path, isDirectory: &isDir) {
@@ -62,13 +62,13 @@ class DLILCacheManager: NSObject {
     internal func imageByKey(key: String) -> UIImage? {
         var image: UIImage? = nil
 
-        if self.memoryCacheEnabled {
-            image = self.cache.object(forKey: key as NSString)
+        if memoryCacheEnabled {
+            image = cache.object(forKey: key as NSString)
         }
 
         if image == nil {
-            if self.diskCacheEnabled {
-                image = self.imageFromDisk(key: key)
+            if diskCacheEnabled {
+                image = imageFromDisk(key: key)
             }
         }
 
@@ -81,7 +81,7 @@ class DLILCacheManager: NSObject {
      - parameter key: Url of image that using as cache key
      */
     internal func saveImage(image: UIImage?, forKey: String) {
-        if self.memoryCacheEnabled {
+        if memoryCacheEnabled {
             DispatchQueue.global(qos: .background).async {
                 if let image = image {
                     self.cache.setObject(image, forKey: forKey as NSString)
@@ -89,7 +89,7 @@ class DLILCacheManager: NSObject {
             }
         }
 
-        if self.diskCacheEnabled {
+        if diskCacheEnabled {
             DispatchQueue.global(qos: .background).async {
                 if let image = image {
                     self.saveImageToDisk(image: image, withKey: forKey)
@@ -131,7 +131,7 @@ class DLILCacheManager: NSObject {
     // MARK: - private methods
 
     private func saveImageToDisk(image :UIImage, withKey: String) {
-        let path = self.getOrCreatePathToImageWithKey(key: withKey)
+        let path = getOrCreatePathToImageWithKey(key: withKey)
         let data = UIImagePNGRepresentation(image)
 
         do {
@@ -142,14 +142,14 @@ class DLILCacheManager: NSObject {
     }
 
     private func imageFromDisk(key: String) -> UIImage? {
-        let path = self.getOrCreatePathToImageWithKey(key: key)
+        let path = getOrCreatePathToImageWithKey(key: key)
 
         return UIImage(contentsOfFile: path)
     }
 
     private func getOrCreatePathToImageWithKey(key: String) -> String {
         let imageName = key.replacingOccurrences(of: "/", with: "_")
-        let path = (self.cacheDirectoryPath() as NSString).appendingPathComponent(imageName)
+        let path = (cacheDirectoryPath() as NSString).appendingPathComponent(imageName)
 
         // create file if not exist
         let fileManager = FileManager.default

@@ -41,14 +41,14 @@ public class DLImageView: UIImageView {
      - parameter url: The url of image.
      - parameter completed: Completion block that will be called after image loading.
      */
-    public func image(for url: String, completed: DLILCompletion? = nil) {
-        guard let url = URL(string: url) else {
+    public func image(from url: URL?, completed: DLILCompletion? = nil) {
+        guard let url = url else {
             completed?(nil, nil)
 
             return
         }
 
-        image(for: URLRequest(url: url), completed: completed)
+        image(from: URLRequest(url: url), completed: completed)
     }
 
     /**
@@ -56,9 +56,9 @@ public class DLImageView: UIImageView {
      - parameter request: The request of image.
      - parameter completed: Completion block that will be called after image loading.
      */
-    public func image(for request: URLRequest, completed: DLILCompletion? = nil) {
-        self.url = request.url?.absoluteString
-        self.image = nil
+    public func image(from request: URLRequest, completed: DLILCompletion? = nil) {
+        url = request.url?.absoluteString
+        image = nil
 
         DLImageLoader.shared.image(for: request, completed: { [weak self] (image, error) in
             if let completion = completed {
@@ -73,13 +73,13 @@ public class DLImageView: UIImageView {
      Cancel started operation
      */
     public func cancelLoading() {
-        DLImageLoader.shared.cancelOperation(url: self.url)
+        DLImageLoader.shared.cancelOperation(url: url)
     }
 
 
     // MARK: - private methods
 
     private func configureView() {
-        self.contentMode = UIViewContentMode.scaleAspectFit
+        contentMode = UIViewContentMode.scaleAspectFit
     }
 }
