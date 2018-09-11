@@ -13,6 +13,8 @@ This project aims to provide a reusable instrument for asynchronous image loadin
 | 4.X   | -             |
 | 2.2   | 1.2.0-swift   |
 
+[Objective-C](https://github.com/AndreyLunevich/DLImageLoader-iOS/tree/objc) - "DLImageLoader", "~> 2.2.0"
+
 ### Cocoapods
 
 [CocoaPods](http://cocoapods.org) is the recommended way to add DLImageLoader to your project.
@@ -57,9 +59,6 @@ DLImageLoader.shared.cancelAllOperations()
 <pre>
 DLImageView.cancelLoading()
 </pre>
-=======
-[Objective-C](https://github.com/AndreyLunevich/DLImageLoader-iOS/tree/objc) - "DLImageLoader", "~> 2.2.0"
->>>>>>> Refactor
 
 ## Plans
 
