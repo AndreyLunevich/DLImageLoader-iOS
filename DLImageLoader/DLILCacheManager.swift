@@ -132,7 +132,7 @@ class DLILCacheManager: NSObject {
 
     private func saveImageToDisk(image :UIImage, withKey: String) {
         let path = getOrCreatePathToImageWithKey(key: withKey)
-        let data = UIImagePNGRepresentation(image)
+        let data = image.pngData()
 
         do {
             try data?.write(to: URL(fileURLWithPath: path), options: .atomic)

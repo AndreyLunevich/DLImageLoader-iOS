@@ -113,6 +113,7 @@
 				TargetAttributes = {
 					D80956531BA8B5D600DED40C = {
 						CreatedOnToolsVersion = 7.1;
+						LastSwiftMigration = 1000;
 					};
 				};
 			};
@@ -297,6 +298,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.lunevich.DLImageLoader-Demo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "";
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -309,6 +311,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.lunevich.DLImageLoader-Demo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "";
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};

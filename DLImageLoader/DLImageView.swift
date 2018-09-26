@@ -80,6 +80,6 @@ public class DLImageView: UIImageView {
     // MARK: - private methods
 
     private func configureView() {
-        contentMode = UIViewContentMode.scaleAspectFit
+        contentMode = UIView.ContentMode.scaleAspectFit
     }
 }
