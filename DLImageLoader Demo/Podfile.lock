@@ -1,0 +1,16 @@
+PODS:
+  - DLImageLoader (4.2.0)
+
+DEPENDENCIES:
+  - DLImageLoader (from `../`)
+
+EXTERNAL SOURCES:
+  DLImageLoader:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  DLImageLoader: 9ac730ddf6d43c4b89f40cb5dacd770b8e7db50e
+
+PODFILE CHECKSUM: e50ff14b2e16c635b9c2e15115fa4b43944d6859
+
+COCOAPODS: 1.6.0

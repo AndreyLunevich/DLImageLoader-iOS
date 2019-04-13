@@ -1,0 +1,7 @@
+source 'https://github.com/CocoaPods/Specs.git'
+use_frameworks!
+
+target "DLImageLoader Demo" do
+  platform :ios, "8.3"
+  pod "DLImageLoader", :path => "../"
+end

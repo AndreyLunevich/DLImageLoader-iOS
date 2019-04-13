@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import DLImageLoader
 
 class ViewController: UIViewController {
 

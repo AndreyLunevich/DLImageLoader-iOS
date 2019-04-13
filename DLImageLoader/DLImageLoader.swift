@@ -44,7 +44,11 @@ public class DLImageLoader {
      - parameter imageView: UIImageView in which will display image.
      */
     public func image(from url: URL?, into imageView: UIImageView) {
-        guard let url = url else { return }
+        guard let url = url else {
+            imageView.image = nil
+
+            return
+        }
 
         image(for: URLRequest(url: url), imageView: imageView)
     }
@@ -56,7 +60,11 @@ public class DLImageLoader {
      - parameter canceled: Cancellation block that will be called if loading was canceled.
      */
     public func image(for url: URL?, completed: DLILCompletion? = nil) {
-        guard let url = url else { return }
+        guard let url = url else {
+            completed?(nil, nil) // fail loading
+
+            return
+        }
 
         image(for: URLRequest(url: url), completed: completed)
     }
