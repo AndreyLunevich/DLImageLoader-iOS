@@ -46,8 +46,6 @@ DLImageLoader.shared.load(url, into: imageView) { result in
 
 ### Cancel loading operations
 
-// === With using of DLImageLoader instance === //
-
 <pre>
 DLImageLoader.shared.cancelOperation(url: "image_url_here")
 </pre>
