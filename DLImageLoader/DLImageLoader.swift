@@ -20,15 +20,13 @@ import UIKit
 
 public typealias DLILCompletion = (_ result: Result<UIImage, DLImageLoader.Error>) -> Void
 
-public class DLImageLoader {
+public final class DLImageLoader {
 
     public enum Error: Swift.Error {
         case invalidUrl
         case loadingFailed(Swift.Error)
         case corruptedImage
     }
-
-    private var session: URLSession
 
     public var enableLog = false
 
@@ -38,10 +36,28 @@ public class DLImageLoader {
      */
     public static let shared = DLImageLoader()
 
+    private let session: URLSession
+    private var cache: DLILCacheManager?
+
     private init() {
         session = URLSession(configuration: URLSessionConfiguration.default,
                              delegate: nil,
                              delegateQueue: OperationQueue.main)
+
+        do {
+            setupCache(try DLILCacheManager())
+        } catch {
+            log(message: error.localizedDescription)
+        }
+    }
+
+    @discardableResult
+    public func setupCache(_ cache: DLILCacheManager) -> Self {
+        self.cache?.clear()
+
+        self.cache = cache
+
+        return self
     }
 
     /**
@@ -50,14 +66,20 @@ public class DLImageLoader {
      - parameter into: UIImageView in which will display image.
      - parameter completion: Completion block that will be called after image loading.
      */
-    public func load(_ url: URL?, into imageView: UIImageView, completion: DLILCompletion? = nil) {
+    @discardableResult
+    public func load(_ url: URL?,
+                     placeholder: UIImage? = nil,
+                     into imageView: UIImageView,
+                     completion: DLILCompletion? = nil) -> URLSessionDataTask? {
+        imageView.image = placeholder
+
         guard let url = url else {
             completion?(.failure(.invalidUrl))
 
-            return
+            return nil
         }
 
-        load(URLRequest(url: url), into: imageView, completion: completion)
+        return load(URLRequest(url: url), into: imageView, completion: completion)
     }
 
     /**
@@ -66,53 +88,68 @@ public class DLImageLoader {
      - parameter into: UIImageView in which will display image.
      - parameter completion: Completion block that will be called after image loading.
      */
-    public func load(_ request: URLRequest, into imageView: UIImageView, completion: DLILCompletion? = nil) {
+    @discardableResult
+    public func load(_ request: URLRequest,
+                     placeholder: UIImage? = nil,
+                     into imageView: UIImageView,
+                     completion: DLILCompletion? = nil) -> URLSessionDataTask? {
+        imageView.image = placeholder
+
         guard let url = request.url?.absoluteString, !url.isEmpty else {
             completion?(.failure(.invalidUrl))
 
-            return
+            return nil
         }
 
         log(message: "loading image from url => \(url)")
 
-        if let image = DLILCacheManager.shared.image(forKey: url) {
+        if let image = cache?.image(forKey: url) {
             log(message: "got an image from the cache")
 
-            completion?(.success(image))
-        } else {
-            let task = session.dataTask(with: request, completionHandler: { [weak self] (data, response, error) in
-                if let error = error {
-                    completion?(.failure(.loadingFailed(error)))
+            if let completion = completion {
+                completion(.success(image))
+            } else {
+                imageView.image = image
+                imageView.setNeedsDisplay()
+            }
 
-                    self?.log(message: "error image loading \(error)")
-                } else {
-                    if let data = data, let image = UIImage(data: data) {
-                        // save loaded image to cache
-                        DLILCacheManager.shared.saveImage(image: image, forKey: url)
-
-                        if let completion = completion {
-                            completion(.success(image))
-                        } else {
-                            imageView.image = image
-                            imageView.setNeedsDisplay()
-                        }
-
-                        self?.log(message: "loaded image from url => \(url)")
-                    } else {
-                        completion?(.failure(.corruptedImage))
-                    }
-                }
-            })
-
-            task.resume()
+            return nil
         }
+
+        let task = session.dataTask(with: request) { [weak self] (data, response, error) in
+            if let error = error {
+                completion?(.failure(.loadingFailed(error)))
+
+                self?.log(message: "error image loading \(error)")
+            } else {
+                if let data = data, let image = UIImage(data: data) {
+                    // save loaded image to cache
+                    self?.cache?.saveImage(image, forKey: url)
+
+                    if let completion = completion {
+                        completion(.success(image))
+                    } else {
+                        imageView.image = image
+                        imageView.setNeedsDisplay()
+                    }
+
+                    self?.log(message: "loaded image from url => \(url)")
+                } else {
+                    completion?(.failure(.corruptedImage))
+                }
+            }
+        }
+
+        task.resume()
+
+        return task
     }
 
     /**
      Cancel task
      - parameter url: Url to stop a task
      */
-    public func cancelOperation(url: String!) {
+    public func cancelOperation(url: String) {
         allTasks(of: session) { (tasks) in
             for task in tasks {
                 if task.currentRequest?.url?.absoluteString == url {
@@ -136,8 +173,8 @@ public class DLImageLoader {
     /**
      Clear cache of DLImageLoader
      */
-    public func clearCache(completed:((_ success: Bool) ->())?) {
-        DLILCacheManager.shared.clear(completed: completed)
+    public func clearCache(_ completion: ((_ success: Bool) -> Void)? = nil) {
+        cache?.clear(completion)
     }
 
 
