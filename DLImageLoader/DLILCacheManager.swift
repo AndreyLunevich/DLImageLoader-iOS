@@ -59,7 +59,7 @@ class DLILCacheManager: NSObject {
      If image will not found, will try to get image from disk cache
      - parameter key: Url of image that using as cache key.
      */
-    internal func imageByKey(key: String) -> UIImage? {
+    internal func image(forKey key: String) -> UIImage? {
         var image: UIImage? = nil
 
         if memoryCacheEnabled {
@@ -80,11 +80,11 @@ class DLILCacheManager: NSObject {
      - parameter image: UIImage to save in cache.
      - parameter key: Url of image that using as cache key
      */
-    internal func saveImage(image: UIImage?, forKey: String) {
+    internal func saveImage(image: UIImage?, forKey key: String) {
         if memoryCacheEnabled {
             DispatchQueue.global(qos: .background).async {
                 if let image = image {
-                    self.cache.setObject(image, forKey: forKey as NSString)
+                    self.cache.setObject(image, forKey: key as NSString)
                 }
             }
         }
@@ -92,7 +92,7 @@ class DLILCacheManager: NSObject {
         if diskCacheEnabled {
             DispatchQueue.global(qos: .background).async {
                 if let image = image {
-                    self.saveImageToDisk(image: image, withKey: forKey)
+                    self.saveImageToDisk(image: image, withKey: key)
                 }
             }
         }

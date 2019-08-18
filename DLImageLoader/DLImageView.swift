@@ -20,35 +20,21 @@ import UIKit
 
 public class DLImageView: UIImageView {
 
-    private(set) var url: String? = ""
-
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        configureView()
-    }
-
-    override public func awakeFromNib() {
-        super.awakeFromNib()
-        configureView()
-    }
+    private var request: URLRequest?
 
     /**
      Load image from url
      - parameter url: The url of image.
      - parameter completed: Completion block that will be called after image loading.
      */
-    public func image(from url: URL?, completed: DLILCompletion? = nil) {
+    public func image(from url: URL?, completion: DLILCompletion? = nil) {
         guard let url = url else {
-            completed?(nil, nil)
+            completion?(.failure(.invalidUrl))
 
             return
         }
 
-        image(from: URLRequest(url: url), completed: completed)
+        image(from: URLRequest(url: url), completion: completion)
     }
 
     /**
@@ -56,30 +42,16 @@ public class DLImageView: UIImageView {
      - parameter request: The request of image.
      - parameter completed: Completion block that will be called after image loading.
      */
-    public func image(from request: URLRequest, completed: DLILCompletion? = nil) {
-        url = request.url?.absoluteString
-        image = nil
+    public func image(from request: URLRequest, completion: DLILCompletion? = nil) {
+        self.request = request
 
-        DLImageLoader.shared.image(for: request, completed: { [weak self] (image, error) in
-            if let completion = completed {
-                completion(image, error)
-            } else {
-                self?.image = image
-            }
-        })
+        DLImageLoader.shared.load(request, into: self, completion: completion)
     }
 
     /**
      Cancel started operation
      */
     public func cancelLoading() {
-        DLImageLoader.shared.cancelOperation(url: url)
-    }
-
-
-    // MARK: - private methods
-
-    private func configureView() {
-        contentMode = UIView.ContentMode.scaleAspectFit
+        DLImageLoader.shared.cancelOperation(url: request?.url?.absoluteString)
     }
 }
