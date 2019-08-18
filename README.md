@@ -10,7 +10,8 @@ This project aims to provide a reusable instrument for asynchronous image loadin
 
 | Swift | DLImageLoader |
 | ----- | ------------- |
-| 4.X   | -             |
+| 5.X   | _             |
+| 4.X   | 4.2.0         |
 | 2.2   | 1.2.0-swift   |
 
 [Objective-C](https://github.com/AndreyLunevich/DLImageLoader-iOS/tree/objc) - "DLImageLoader", "~> 2.2.0"
@@ -19,7 +20,7 @@ This project aims to provide a reusable instrument for asynchronous image loadin
 
 [CocoaPods](http://cocoapods.org) is the recommended way to add DLImageLoader to your project.
 
-1. Add a pod entry for DLImageLoader to your Podfile `pod 'DLImageLoader', '1.2.0-swift'`
+1. Add a pod entry for DLImageLoader to your Podfile `pod 'DLImageLoader'
 2. Install the pod(s) by running `pod install`.
 
 ## Usage
@@ -27,17 +28,18 @@ This project aims to provide a reusable instrument for asynchronous image loadin
 ### Simple
 
 <pre>
-DLImageLoader.shared.image(for: "image_url_here", imageView: "UIImageView here")
+DLImageLoader.shared.load("image_url_here", into: "UIImageView here")
 </pre>
 
 ### Complete
 
 <pre>
-DLImageLoader.shared.image(for: "image_url_here") { (image, error) in
-    if let error = error {
-        // if we have no any errors
-    } else {
-        // if we got an error when load an image
+DLImageLoader.shared.load(url, into: imageView) { result in
+    switch result {
+    case .success(let image):
+
+    case .failure(let error):
+
     }
 }
 </pre>
@@ -54,11 +56,6 @@ DLImageLoader.shared.cancelOperation(url: "image_url_here")
 DLImageLoader.shared.cancelAllOperations()
 </pre>
 
-// === With using of DLImageView === //
-
-<pre>
-DLImageView.cancelLoading()
-</pre>
 
 ## Plans
 
