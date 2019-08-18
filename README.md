@@ -34,7 +34,7 @@ DLImageLoader.shared.load("image_url_here", into: "UIImageView here")
 ### Complete
 
 <pre>
-DLImageLoader.shared.load(url, into: imageView) { result in
+DLImageLoader.shared.load("image_url_here", into: "UIImageView here") { result in
     switch result {
     case .success(let image):
 
