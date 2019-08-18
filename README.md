@@ -20,7 +20,7 @@ This project aims to provide a reusable instrument for asynchronous image loadin
 
 [CocoaPods](http://cocoapods.org) is the recommended way to add DLImageLoader to your project.
 
-1. Add a pod entry for DLImageLoader to your Podfile `pod 'DLImageLoader'
+1. Add a pod entry for DLImageLoader to your Podfile `pod 'DLImageLoader'`
 2. Install the pod(s) by running `pod install`.
 
 ## Usage
