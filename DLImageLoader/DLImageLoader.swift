@@ -18,9 +18,9 @@
 
 import UIKit
 
-public typealias DLILCompletion = (_ result: Result<UIImage, DLImageLoader.Error>) -> Void
-
 public final class DLImageLoader {
+
+    public typealias Result = (_ result: Swift.Result<UIImage, DLImageLoader.Error>) -> Void
 
     public enum Error: Swift.Error {
         case invalidUrl
@@ -70,7 +70,7 @@ public final class DLImageLoader {
     public func load(_ url: URL?,
                      placeholder: UIImage? = nil,
                      into imageView: UIImageView,
-                     completion: DLILCompletion? = nil) -> URLSessionDataTask? {
+                     completion: Result? = nil) -> URLSessionDataTask? {
         imageView.image = placeholder
 
         guard let url = url else {
@@ -92,7 +92,7 @@ public final class DLImageLoader {
     public func load(_ request: URLRequest,
                      placeholder: UIImage? = nil,
                      into imageView: UIImageView,
-                     completion: DLILCompletion? = nil) -> URLSessionDataTask? {
+                     completion: Result? = nil) -> URLSessionDataTask? {
         imageView.image = placeholder
 
         guard let url = request.url?.absoluteString, !url.isEmpty else {
