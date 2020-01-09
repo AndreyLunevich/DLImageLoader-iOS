@@ -21,7 +21,7 @@ import UIKit
 public final class DLImageLoader {
 
     public typealias Result = (_ result: Swift.Result<UIImage, DLImageLoader.Error>) -> Void
-    public typealias CacheResourceKey = (_ request: URLRequest) -> String
+    public typealias CacheResourceKey = (_ url: String) -> String
 
     public enum Error: Swift.Error {
         case invalidUrl
@@ -38,7 +38,7 @@ public final class DLImageLoader {
     public static let shared = DLImageLoader()
 
     private let session: URLSession
-    private var cache: DLILCacheManager?
+    private var cache: CacheManager?
 
     private init() {
         session = URLSession(configuration: URLSessionConfiguration.default,
@@ -46,14 +46,14 @@ public final class DLImageLoader {
                              delegateQueue: OperationQueue.main)
 
         do {
-            setupCache(try DLILCacheManager())
+            setupCache(try CacheManager())
         } catch {
             log(message: error.localizedDescription)
         }
     }
 
     @discardableResult
-    public func setupCache(_ cache: DLILCacheManager) -> Self {
+    public func setupCache(_ cache: CacheManager) -> Self {
         self.cache?.clear()
 
         self.cache = cache
@@ -158,11 +158,11 @@ public final class DLImageLoader {
             return nil
         }
 
-        let cacheKey = cacheResourceKey?(request) ?? url
+        let cacheKey = cacheResourceKey?(url) ?? url
 
         log(message: "loading image from url => \(url)")
 
-        if let image = cache?.image(forKey: cacheKey) {
+        if let image = try? cache?.image(forKey: cacheKey) {
             log(message: "got an image from the cache")
 
             completion?(.success(image))
@@ -184,7 +184,7 @@ public final class DLImageLoader {
                         }
 
                         // save loaded image to cache
-                        self?.cache?.saveImage(result, forKey: cacheKey)
+                        try? self?.cache?.saveImage(result, forKey: cacheKey)
 
                         DispatchQueue.main.async {
                             completion?(.success(result))
@@ -207,9 +207,9 @@ public final class DLImageLoader {
      Cancel task
      - parameter url: Url to stop a task
      */
-    public func cancelOperation(url: String) {
-        allTasks(of: session) { (tasks) in
-            for task in tasks where task.currentRequest?.url?.absoluteString == url {
+    public func cancelOperation(url: URL?) {
+        allTasks(of: session) { tasks in
+            for task in tasks where task.currentRequest?.url == url {
                 task.cancel()
             }
         }
@@ -219,7 +219,7 @@ public final class DLImageLoader {
      Stop all active tasks
      */
     public func cancelAllOperations() {
-        allTasks(of: session) { (tasks) in
+        allTasks(of: session) { tasks in
             for task in tasks {
                 task.cancel()
             }
@@ -229,7 +229,7 @@ public final class DLImageLoader {
     /**
      Clear cache of DLImageLoader
      */
-    public func clearCache(_ completion: ((_ success: Bool) -> Void)? = nil) {
+    public func clearCache(_ completion: ((_ error: Swift.Error?) -> Void)? = nil) {
         cache?.clear(completion)
     }
 
