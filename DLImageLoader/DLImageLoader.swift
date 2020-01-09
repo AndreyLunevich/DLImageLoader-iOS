@@ -21,6 +21,7 @@ import UIKit
 public final class DLImageLoader {
 
     public typealias Result = (_ result: Swift.Result<UIImage, DLImageLoader.Error>) -> Void
+    public typealias CacheResourceKey = (_ request: URLRequest) -> String
 
     public enum Error: Swift.Error {
         case invalidUrl
@@ -70,6 +71,8 @@ public final class DLImageLoader {
     public func load(_ url: URL?,
                      placeholder: UIImage? = nil,
                      into imageView: UIImageView,
+                     apply transformations: [Transformation] = [],
+                     cacheResourceKey: CacheResourceKey? = nil,
                      completion: Result? = nil) -> URLSessionDataTask? {
         imageView.image = placeholder
 
@@ -79,7 +82,11 @@ public final class DLImageLoader {
             return nil
         }
 
-        return load(URLRequest(url: url), into: imageView, completion: completion)
+        return load(URLRequest(url: url),
+                    into: imageView,
+                    apply: transformations,
+                    cacheResourceKey: cacheResourceKey,
+                    completion: completion)
     }
 
     /**
@@ -92,10 +99,12 @@ public final class DLImageLoader {
     public func load(_ request: URLRequest,
                      placeholder: UIImage? = nil,
                      into imageView: UIImageView,
+                     apply transformations: [Transformation] = [],
+                     cacheResourceKey: CacheResourceKey? = nil,
                      completion: Result? = nil) -> URLSessionDataTask? {
         imageView.image = placeholder
 
-        return load(request) { result in
+        return load(request, apply: transformations, cacheResourceKey: cacheResourceKey) { result in
             switch result {
             case .success(let image):
                 if let completion = completion {
@@ -117,14 +126,20 @@ public final class DLImageLoader {
      - parameter completion: Completion block that will be called after image loading.
      */
     @discardableResult
-    public func load(_ url: URL?, completion: Result? = nil) -> URLSessionDataTask? {
+    public func load(_ url: URL?,
+                     apply transformations: [Transformation] = [],
+                     cacheResourceKey: CacheResourceKey? = nil,
+                     completion: Result? = nil) -> URLSessionDataTask? {
         guard let url = url else {
             completion?(.failure(.invalidUrl))
 
             return nil
         }
 
-        return load(URLRequest(url: url), completion: completion)
+        return load(URLRequest(url: url),
+                    apply: transformations,
+                    cacheResourceKey: cacheResourceKey,
+                    completion: completion)
     }
 
     /**
@@ -133,16 +148,21 @@ public final class DLImageLoader {
      - parameter completion: Completion block that will be called after image loading.
      */
     @discardableResult
-    public func load(_ request: URLRequest, completion: Result? = nil) -> URLSessionDataTask? {
+    public func load(_ request: URLRequest,
+                     apply transformations: [Transformation] = [],
+                     cacheResourceKey: CacheResourceKey? = nil,
+                     completion: Result? = nil) -> URLSessionDataTask? {
         guard let url = request.url?.absoluteString, !url.isEmpty else {
             completion?(.failure(.invalidUrl))
 
             return nil
         }
 
+        let cacheKey = cacheResourceKey?(request) ?? url
+
         log(message: "loading image from url => \(url)")
 
-        if let image = cache?.image(forKey: url) {
+        if let image = cache?.image(forKey: cacheKey) {
             log(message: "got an image from the cache")
 
             completion?(.success(image))
@@ -157,12 +177,21 @@ public final class DLImageLoader {
                 self?.log(message: "error image loading \(error)")
             } else {
                 if let data = data, let image = UIImage(data: data) {
-                    // save loaded image to cache
-                    self?.cache?.saveImage(image, forKey: url)
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        var result = image
+                        for transformation in transformations {
+                            result = transformation.transform(result)
+                        }
 
-                    completion?(.success(image))
+                        // save loaded image to cache
+                        self?.cache?.saveImage(result, forKey: cacheKey)
 
-                    self?.log(message: "loaded image from url => \(url)")
+                        DispatchQueue.main.async {
+                            completion?(.success(result))
+
+                            self?.log(message: "loaded image from url => \(url)")
+                        }
+                    }
                 } else {
                     completion?(.failure(.corruptedImage))
                 }
@@ -205,7 +234,7 @@ public final class DLImageLoader {
     }
 
 
-    // MARK: - private methods
+    // MARK: Private Methods
 
     private func allTasks(of session: URLSession, completionHandler: @escaping ([URLSessionTask]) -> Void) {
         session.getTasksWithCompletionHandler { (data, upload, download) in
