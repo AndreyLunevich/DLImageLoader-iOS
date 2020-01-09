@@ -95,6 +95,29 @@ public final class DLImageLoader {
                      completion: Result? = nil) -> URLSessionDataTask? {
         imageView.image = placeholder
 
+        return load(request) { result in
+            switch result {
+            case .success(let image):
+                if let completion = completion {
+                    completion(.success(image))
+                } else {
+                    imageView.image = image
+                    imageView.setNeedsDisplay()
+                }
+
+            case .failure(let error):
+                completion?(.failure(error))
+            }
+        }
+    }
+
+    /**
+     Load image from request
+     - parameter request: The request of image.
+     - parameter completion: Completion block that will be called after image loading.
+     */
+    @discardableResult
+    public func load(_ request: URLRequest, completion: Result? = nil) -> URLSessionDataTask? {
         guard let url = request.url?.absoluteString, !url.isEmpty else {
             completion?(.failure(.invalidUrl))
 
@@ -106,12 +129,7 @@ public final class DLImageLoader {
         if let image = cache?.image(forKey: url) {
             log(message: "got an image from the cache")
 
-            if let completion = completion {
-                completion(.success(image))
-            } else {
-                imageView.image = image
-                imageView.setNeedsDisplay()
-            }
+            completion?(.success(image))
 
             return nil
         }
@@ -126,12 +144,7 @@ public final class DLImageLoader {
                     // save loaded image to cache
                     self?.cache?.saveImage(image, forKey: url)
 
-                    if let completion = completion {
-                        completion(.success(image))
-                    } else {
-                        imageView.image = image
-                        imageView.setNeedsDisplay()
-                    }
+                    completion?(.success(image))
 
                     self?.log(message: "loaded image from url => \(url)")
                 } else {
@@ -151,10 +164,8 @@ public final class DLImageLoader {
      */
     public func cancelOperation(url: String) {
         allTasks(of: session) { (tasks) in
-            for task in tasks {
-                if task.currentRequest?.url?.absoluteString == url {
-                    task.cancel()
-                }
+            for task in tasks where task.currentRequest?.url?.absoluteString == url {
+                task.cancel()
             }
         }
     }
