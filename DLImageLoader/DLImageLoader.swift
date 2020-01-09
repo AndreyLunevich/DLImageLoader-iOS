@@ -21,7 +21,6 @@ import UIKit
 public final class DLImageLoader {
 
     public typealias Result = (_ result: Swift.Result<UIImage, DLImageLoader.Error>) -> Void
-    public typealias CacheResourceKey = (_ url: String) -> String
 
     public enum Error: Swift.Error {
         case invalidUrl
@@ -72,7 +71,7 @@ public final class DLImageLoader {
                      placeholder: UIImage? = nil,
                      into imageView: UIImageView,
                      apply transformations: [Transformation] = [],
-                     cacheResourceKey: CacheResourceKey? = nil,
+                     cacheStrategy: CacheStrategy = .tranformed(key: nil),
                      completion: Result? = nil) -> URLSessionDataTask? {
         imageView.image = placeholder
 
@@ -85,7 +84,7 @@ public final class DLImageLoader {
         return load(URLRequest(url: url),
                     into: imageView,
                     apply: transformations,
-                    cacheResourceKey: cacheResourceKey,
+                    cacheStrategy: cacheStrategy,
                     completion: completion)
     }
 
@@ -100,11 +99,11 @@ public final class DLImageLoader {
                      placeholder: UIImage? = nil,
                      into imageView: UIImageView,
                      apply transformations: [Transformation] = [],
-                     cacheResourceKey: CacheResourceKey? = nil,
+                     cacheStrategy: CacheStrategy = .tranformed(key: nil),
                      completion: Result? = nil) -> URLSessionDataTask? {
         imageView.image = placeholder
 
-        return load(request, apply: transformations, cacheResourceKey: cacheResourceKey) { result in
+        return load(request, apply: transformations, cacheStrategy: cacheStrategy) { result in
             switch result {
             case .success(let image):
                 if let completion = completion {
@@ -128,7 +127,7 @@ public final class DLImageLoader {
     @discardableResult
     public func load(_ url: URL?,
                      apply transformations: [Transformation] = [],
-                     cacheResourceKey: CacheResourceKey? = nil,
+                     cacheStrategy: CacheStrategy = .tranformed(key: nil),
                      completion: Result? = nil) -> URLSessionDataTask? {
         guard let url = url else {
             completion?(.failure(.invalidUrl))
@@ -138,7 +137,7 @@ public final class DLImageLoader {
 
         return load(URLRequest(url: url),
                     apply: transformations,
-                    cacheResourceKey: cacheResourceKey,
+                    cacheStrategy: cacheStrategy,
                     completion: completion)
     }
 
@@ -150,7 +149,7 @@ public final class DLImageLoader {
     @discardableResult
     public func load(_ request: URLRequest,
                      apply transformations: [Transformation] = [],
-                     cacheResourceKey: CacheResourceKey? = nil,
+                     cacheStrategy: CacheStrategy = .tranformed(key: nil),
                      completion: Result? = nil) -> URLSessionDataTask? {
         guard let url = request.url?.absoluteString, !url.isEmpty else {
             completion?(.failure(.invalidUrl))
@@ -158,11 +157,9 @@ public final class DLImageLoader {
             return nil
         }
 
-        let cacheKey = cacheResourceKey?(url) ?? url
-
         log(message: "loading image from url => \(url)")
 
-        if let image = try? cache?.image(forKey: cacheKey) {
+        if let image = try? image(for: cacheStrategy, url: url) {
             log(message: "got an image from the cache")
 
             completion?(.success(image))
@@ -184,7 +181,7 @@ public final class DLImageLoader {
                         }
 
                         // save loaded image to cache
-                        try? self?.cache?.saveImage(result, forKey: cacheKey)
+                        try? self?.saveImage(original: image, transformed: result, strategy: cacheStrategy, url: url)
 
                         DispatchQueue.main.async {
                             completion?(.success(result))
@@ -235,6 +232,39 @@ public final class DLImageLoader {
 
 
     // MARK: Private Methods
+
+    private func image(for strategy: CacheStrategy, url: String) throws -> UIImage? {
+        var image: UIImage?
+
+        switch strategy {
+        case .original(let key), .tranformed(let key):
+            image = try cache?.image(forKey: key ?? url)
+
+        case .both(let original, let tranformed):
+            image = try cache?.image(forKey: original ?? url)
+
+            if image == nil {
+                image = try cache?.image(forKey: tranformed ?? url)
+            }
+        }
+
+        return image
+    }
+
+    private func saveImage(original: UIImage, transformed: UIImage, strategy: CacheStrategy, url: String) throws {
+        switch strategy {
+        case .original(let key):
+            try cache?.saveImage(original, forKey: key ?? url)
+
+        case .tranformed(let key):
+            try cache?.saveImage(transformed, forKey: key ?? "\(url)+transformed")
+
+        case .both(let originalKey, let tranformedKey):
+            try cache?.saveImage(original, forKey: originalKey ?? url)
+
+            try cache?.saveImage(transformed, forKey: tranformedKey ?? "\(url)+transformed")
+        }
+    }
 
     private func allTasks(of session: URLSession, completionHandler: @escaping ([URLSessionTask]) -> Void) {
         session.getTasksWithCompletionHandler { (data, upload, download) in
