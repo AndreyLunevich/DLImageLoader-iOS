@@ -112,6 +112,22 @@ public final class DLImageLoader {
     }
 
     /**
+     Load image from url
+     - parameter url: The url of image.
+     - parameter completion: Completion block that will be called after image loading.
+     */
+    @discardableResult
+    public func load(_ url: URL?, completion: Result? = nil) -> URLSessionDataTask? {
+        guard let url = url else {
+            completion?(.failure(.invalidUrl))
+
+            return nil
+        }
+
+        return load(URLRequest(url: url), completion: completion)
+    }
+
+    /**
      Load image from request
      - parameter request: The request of image.
      - parameter completion: Completion block that will be called after image loading.
